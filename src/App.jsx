@@ -1,10 +1,16 @@
+import { BrowserRouter } from "react-router-dom"
+import Navbar from "./components/Navbar"
+import Footer from "./components/Footer"
 
 
 function App() {
 
   return (
     <>
-      <p>hello</p>
+    <BrowserRouter>
+      <Navbar/>
+      <Footer/>
+    </BrowserRouter>
     </>
   )
 }
