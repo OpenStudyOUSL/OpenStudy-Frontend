@@ -1,5 +1,3 @@
-import React from "react";
-
 const ProfileDashboard = () => {
   return (
     <div className="min-h-screen bg-[#F3EFFF] p-6 flex justify-center">
