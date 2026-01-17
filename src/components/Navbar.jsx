@@ -43,25 +43,24 @@ const Navbar = () => {
             About Us
           </Link>
         </div>
-        {/* Profile Photo */}
-        <div className="ml-auto mr-16 relative group">
-          <img
-            src="./profile.jpg"
-            alt="Profile"
-            className="w-10 h-10 rounded-full object-cover cursor-pointer"
-          />
+         {/* Profile Photo */}
+      <Link to="/profile" className="ml-10 mr-16 relative group">
+        <img
+          src="./profile.jpg"
+          alt="Profile"
+          className="w-10 h-10 rounded-full object-cover cursor-pointer"
+        />
 
-          {/* Name tooltip */}
-          <div
-            className="absolute right-1/2 translate-x-1/2 bg-purple-900
-                text-white text-sm px-3 py-1 rounded-md
-                  opacity-0 group-hover:opacity-100
-                  transition-opacity duration-300
-                  whitespace-nowrap"
-          >
-            User Name
-          </div>
+        {/* Name tooltip */}
+        <div
+          className="absolute right-1/2 translate-x-1/2 bg-purple-900
+          text-white text-sm px-3 py-1 rounded-md
+          opacity-0 group-hover:opacity-100
+          transition-opacity duration-300 whitespace-nowrap"
+        >
+          User Name
         </div>
+      </Link>
       </div>
     </>
   );
