@@ -1,6 +1,8 @@
+import CourseCard from "../../components/CourseCard";
+
 function HomePage() {
   return (
-    <div>HomePage</div>
+    <CourseCard />
   )
 };
 
