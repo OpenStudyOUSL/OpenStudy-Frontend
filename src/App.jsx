@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes, Outlet } from "react-router-dom";
+import toast, { Toaster } from 'react-hot-toast';
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import HomePage from "./pages/student/HomePage";
@@ -9,6 +10,17 @@ import AboutUs from "./pages/student/AboutusPage";
 import AdminDashboard from "./pages/admin/AdminDashbord";
 import ProfileDashboard from "./pages/student/ProfileDashboardPage";
 import ContactusPage from "./pages/ContactusPage";
+import EditProfilePage from "./pages/student/EditProfilePage";
+
+
+
+function FirstLayout() {
+  return (
+    <>
+      <Outlet />           {/* ← pages will render here */}
+    </>
+  );
+}
 
 // Layout for normal/student pages (with navbar + footer)
 function StudentLayout() {
@@ -29,15 +41,21 @@ function AdminLayout() {
 function App() {
   return (
     <BrowserRouter>
+    <Toaster position="top-right" reverseOrder={false} />
       <Routes>
+
+        {/* First page (no navbar, no footer) */}
+        <Route element={<FirstLayout />}>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+        </Route>
 
         {/* Student / Public area with Navbar + Footer */}
         <Route element={<StudentLayout />}>
           <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/profile" element={<ProfileDashboard />} />
+          <Route path="/profile/edit" element={<EditProfilePage />} />
           <Route path='/contact' element={<ContactusPage />} />
           
         </Route>
