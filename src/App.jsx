@@ -10,17 +10,6 @@ import AboutUs from "./pages/student/AboutusPage";
 import AdminDashboard from "./pages/admin/AdminDashbord";
 import ProfileDashboard from "./pages/student/ProfileDashboardPage";
 import ContactusPage from "./pages/ContactusPage";
-import EditProfilePage from "./pages/student/EditProfilePage";
-
-
-
-function FirstLayout() {
-  return (
-    <>
-      <Outlet />           {/* ← pages will render here */}
-    </>
-  );
-}
 
 // Layout for normal/student pages (with navbar + footer)
 function StudentLayout() {
@@ -57,6 +46,9 @@ function App() {
           <Route path="/profile" element={<ProfileDashboard />} />
           <Route path="/profile/edit" element={<EditProfilePage />} />
           <Route path='/contact' element={<ContactusPage />} />
+          <Route path="/Course" element={<CoursePage />} />
+          <Route path="/Leaderboard" element={<LeaderBoradPage />} />
+
           
         </Route>
 
