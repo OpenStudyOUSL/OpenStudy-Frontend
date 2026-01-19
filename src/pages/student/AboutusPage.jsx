@@ -31,7 +31,7 @@ const teamMembers = [
     name: "W.M.W. Wijesinghe",
     regNo: "123599265",
     role: "UI/UX Designer",
-    skills: ["UI/UX", "Figma", "Canva"],
+    skills: ["UI/UX", "Figma", "Tailwind"],
     image: "./profile.jpg",
   },
   {
@@ -341,13 +341,6 @@ const AboutUs = () => {
           </motion.div>
         </div>
       </section>
-
-      {/* FOOTER */}
-      <footer className="border-t border-red-200/70 bg-white/60 backdrop-blur py-8">
-        <div className="mx-auto max-w-6xl px-6 text-center text-sm text-gray-700">
-          © {new Date().getFullYear()} OUSL Student Project • Built with MERN
-        </div>
-      </footer>
     </div>
   );
 };
