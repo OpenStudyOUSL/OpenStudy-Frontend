@@ -38,7 +38,7 @@ export default function LoginPage() {
     e.preventDefault();
     login();
   };
-
+};
 
 export default function LoginPage() {
 
