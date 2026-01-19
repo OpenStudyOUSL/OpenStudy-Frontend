@@ -39,6 +39,9 @@ export default function LoginPage() {
     login();
   };
 
+
+export default function LoginPage() {
+
   return (
     <div className="min-h-screen bg-linear-to-br from-purple-700 to-purple-900 flex items-center justify-center p-6">
       <div className="w-full max-w-6xl bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 overflow-hidden">

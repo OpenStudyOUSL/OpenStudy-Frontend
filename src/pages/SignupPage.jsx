@@ -5,6 +5,9 @@ import toast from "react-hot-toast";
 import UploadMediaUploadtoSupabase from "../utils/mediaUpload";
 
 export default function SignUpPage() {
+
+  const [profileImage, setProfileImage] = useState(null);
+
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [registerNumber, setRegisterNumber] = useState("");
