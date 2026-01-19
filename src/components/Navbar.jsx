@@ -46,7 +46,7 @@ const Navbar = () => {
          {/* Profile Photo */}
       <Link to="/profile" className="ml-10 mr-16 relative group">
         <img
-          src="./profile.jpg"
+          src="../../public/profile.jpg"
           alt="Profile"
           className="w-10 h-10 rounded-full object-cover cursor-pointer"
         />
