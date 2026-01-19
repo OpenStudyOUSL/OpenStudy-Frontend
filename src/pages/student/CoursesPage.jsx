@@ -94,7 +94,7 @@ function CoursePage() {
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <h1 className="text-3xl font-extrabold text-slate-900">Courses</h1>
 
-          <div className="relative w-full md:w-[360px]">
+          <div className="relative w-full md:w-90">
             <input
               type="text"
               value={search}

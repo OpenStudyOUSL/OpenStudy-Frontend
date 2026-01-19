@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function EditProfilePage() {
-  const defaultImage = "../../../public/profile.jpg"; // public folder
+  const defaultImage = "/profile.jpg"; // ✅ correct public path
 
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -14,42 +16,92 @@ export default function EditProfilePage() {
   const [degree, setDegree] = useState("");
   const [regNumber, setRegNumber] = useState("");
 
+  /* ================= LOAD USER DATA ================= */
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await axios.get(
+          import.meta.env.VITE_BACKEND_URL + "/api/users/profile",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        const user = res.data.user;
+
+        setFirstName(user.firstName || "");
+        setLastName(user.lastName || "");
+        setUsername(user.userName || "");
+        setEmail(user.email || "");
+        setNumber(user.number || "");
+        setDegree(user.degree || "");
+        setRegNumber(user.registerNumber || "");
+        setImagePreview(user.profilePicture || defaultImage);
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to load profile");
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  /* ================= IMAGE HANDLING ================= */
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setImage(file);
-      setImagePreview(URL.createObjectURL(file));
-    }
+    if (!file) return;
+
+    setImage(file);
+    setImagePreview(URL.createObjectURL(file));
   };
 
   const removeImage = () => {
     setImage(null);
-    setImagePreview(null);
+    setImagePreview(defaultImage);
   };
 
-  const handleSubmit = (e) => {
+  /* ================= SUBMIT ================= */
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const updatedUser = {
-      firstName,
-      lastName,
-      username,
-      email,
-      number,
-      degree,
-      regNumber,
-      profilePicture: image,
-    };
+    try {
+      const formData = new FormData();
+      formData.append("firstName", firstName);
+      formData.append("lastName", lastName);
+      formData.append("userName", username);
+      formData.append("email", email);
+      formData.append("number", number);
+      formData.append("degree", degree);
+      formData.append("registerNumber", regNumber);
 
-    console.log("Updated User:", updatedUser);
-    // 🔐 API call here
+      if (image) {
+        formData.append("profilePicture", image);
+      }
+
+      await axios.put(
+        import.meta.env.VITE_BACKEND_URL + "/api/users/profile",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      toast.success("Profile updated successfully");
+    } catch (error) {
+      console.error(error);
+      toast.error("Profile update failed");
+    }
   };
 
   return (
     <div className="min-h-screen bg-purple-100 flex justify-center items-center px-6 py-10">
       <div className="w-full max-w-5xl bg-purple-400 rounded-3xl shadow-2xl p-12">
 
-        {/* Title */}
         <h1 className="text-3xl font-bold text-white mb-10">Profile</h1>
 
         {/* Profile Image */}
@@ -70,7 +122,7 @@ export default function EditProfilePage() {
             />
           </label>
 
-          {imagePreview && (
+          {imagePreview && imagePreview !== defaultImage && (
             <button
               onClick={removeImage}
               className="mt-3 px-6 py-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition"
@@ -82,8 +134,6 @@ export default function EditProfilePage() {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-10">
-
-          {/* Left Column */}
           <div className="space-y-8">
             <Input label="First Name" value={firstName} onChange={setFirstName} />
             <Input label="Last Name" value={lastName} onChange={setLastName} />
@@ -92,13 +142,11 @@ export default function EditProfilePage() {
             <Input label="Number" value={number} onChange={setNumber} />
           </div>
 
-          {/* Right Column */}
           <div className="space-y-8">
             <Input label="Degree programme" value={degree} onChange={setDegree} />
             <Input label="OUSL Register Number" value={regNumber} onChange={setRegNumber} />
           </div>
 
-          {/* Save Button */}
           <div className="col-span-full flex justify-center mt-10">
             <button
               type="submit"
@@ -113,7 +161,7 @@ export default function EditProfilePage() {
   );
 }
 
-/* Reusable Input Component */
+/* ================= INPUT COMPONENT ================= */
 function Input({ label, value, onChange }) {
   return (
     <div>

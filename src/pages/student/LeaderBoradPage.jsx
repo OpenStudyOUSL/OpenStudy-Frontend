@@ -13,7 +13,7 @@ function TopCard({ place, user, big }) {
     <div
       className={[
         "relative rounded-2xl bg-violet-300/80 shadow-sm ring-1 ring-black/5",
-        big ? "w-[220px] md:w-[240px] p-5" : "w-[190px] md:w-[200px] p-4",
+        big ? "w-55 md:w-60 p-5" : "w-47.5 md:w-50 p-4",
       ].join(" ")}
     >
       {/* Place bubble */}

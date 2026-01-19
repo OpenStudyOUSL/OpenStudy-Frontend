@@ -68,8 +68,8 @@ const AboutUs = () => {
       {/* HERO */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-linear-to-br from-red-700/10 via-rose-600/6 to-transparent" />
-        <div className="absolute -top-48 -right-40 h-[26rem] w-[26rem] rounded-full bg-red-400/20 blur-3xl" />
-        <div className="absolute -bottom-52 -left-40 h-[28rem] w-[28rem] rounded-full bg-rose-400/20 blur-3xl" />
+        <div className="absolute -top-48 -right-40 h-104 w-104 rounded-full bg-red-400/20 blur-3xl" />
+        <div className="absolute -bottom-52 -left-40 h-112 w-md rounded-full bg-rose-400/20 blur-3xl" />
         <div className="absolute inset-x-0 bottom-0 h-px bg-linear-to-r from-transparent via-red-200/70 to-transparent" />
 
         <div className="relative mx-auto max-w-6xl px-6 pt-24 pb-18 md:pt-28 md:pb-24">
