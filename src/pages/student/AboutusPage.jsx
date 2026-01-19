@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import wijesingheImg from "../../assets/team/wijesinghe3.jpg";
+import wijesingheImg from "../../assets/team/wijesinghe.jpg";
 
 
 // Animations
