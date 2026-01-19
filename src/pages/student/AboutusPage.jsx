@@ -31,7 +31,7 @@ const teamMembers = [
     name: "W.M.W. Wijesinghe",
     regNo: "123599265",
     role: "UI/UX Designer",
-    skills: ["UI/UX", "Figma", "Canva"],
+    skills: ["UI/UX", "Figma", "Tailwind"],
     image: "./profile.jpg",
   },
   {
