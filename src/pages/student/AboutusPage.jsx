@@ -1,7 +1,10 @@
 import React from "react";
 import { motion } from "framer-motion";
 import wijesingheImg from "../../assets/team/wijesinghe.jpg";
-
+import dasanayakaImg from "../../assets/team/dasanayaka.jpg";
+import malingaImg from "../../assets/team/malinga1.jpg";
+import sameeraImg from "../../assets/team/sameera.jpg";
+import jayawickramaImg from "../../assets/team/jayawickrama.jpg";
 
 // Animations
 const container = {
@@ -27,7 +30,7 @@ const teamMembers = [
     regNo: "423600376",
     role: "Frontend Dev. & Testing",
     skills: ["React", "Tailwind", "Teamwork"],
-    image: "./profile.jpg",
+    image: malingaImg
   },
   {
     name: "W.M.W. Wijesinghe",
@@ -41,21 +44,21 @@ const teamMembers = [
     regNo: "223593459",
     role: "Frontend Dev.",
     skills: ["React", "Tailwind", "Express"],
-    image: "./profile.jpg",
+    image: jayawickramaImg
   },
   {
     name: "K.G.A.S. Sameera",
     regNo: "223605905",
     role: "Full-Stack Dev.",
     skills: ["Node.js", "MongoDB", "Express", "React"],
-    image: "./profile.jpg",
+    image: sameeraImg
   },
   {
     name: "N.K. Dasanayaka",
     regNo: "323606637",
     role: "Frontend Dev. & Testing",
     skills: ["React", "Testing", "Tailwind"],
-    image: "./profile.jpg",
+    image: dasanayakaImg
   },
 ];
 
