@@ -1,14 +1,69 @@
-import { Link } from "react-router-dom";
-
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const ProfileDashboard = () => {
+  const navigate = useNavigate();
 
-  const props = {
-    name: "John Doe",
-    regNo: "REG123456",
-    email: "sZBk0@example.com",
-  };
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          toast.error("Please login first");
+          navigate("/login");
+          return;
+        }
+
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/users/`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        
+        setUser(res.data);
+
+      } catch (err) {
+        console.error(err);
+        toast.error("Failed to load profile. Please login again.");
+        localStorage.removeItem("token");
+        navigate("/login");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#F3EFFF] flex items-center justify-center">
+        <p className="text-xl text-purple-700">Loading profile...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-[#F3EFFF] flex items-center justify-center">
+        <p className="text-xl text-red-600">Unable to load profile</p>
+      </div>
+    );
+  }
+
+  // You can adjust fallback values if some fields might be missing
+  const userName = user.userName || "Not set";
+  const regNo    = user.registerNumber    || "Not set";
+  const email    = user.email    || "Not available";
+  const profilePic = user.profilePicture || "https://i.pravatar.cc/150";
 
   return (
     <div className="min-h-screen bg-[#F3EFFF] p-6 flex justify-center">
@@ -25,16 +80,16 @@ const ProfileDashboard = () => {
 
           <div className="flex flex-col md:flex-row items-center md:items-start gap-6 mt-6">
             <img
-              src="https://i.pravatar.cc/150"
+              src={profilePic}
               alt="profile"
-              className="w-28 h-28 rounded-full border-4 border-white shadow"
+              className="w-28 h-28 rounded-full border-4 border-white shadow object-cover"
             />
 
             <div className="flex-1">
-              <h3 className="text-xl font-bold">{props.name}</h3>
+              <h3 className="text-xl font-bold">● {userName}</h3>
               <div className="flex flex-wrap gap-6 mt-2 text-sm">
-                <span>● {props.regNo}</span>
-                <span>● {props.email}</span>
+                <span>● {regNo}</span>
+                <span>● {email}</span>
               </div>
 
               <div className="grid grid-cols-3 text-center mt-8">
@@ -86,13 +141,17 @@ const ProfileDashboard = () => {
           </h2>
 
           <div className="space-y-4">
+            {/* 
+              Later you can replace this static array 
+              with real data from backend (user.subjectsPerformance or similar)
+            */}
             {[60, 98, 50, 25].map((value, index) => (
               <div
                 key={index}
                 className="bg-[#F3EFFF] rounded-xl p-4 flex justify-between items-center"
               >
                 <div>
-                  <p className="font-semibold">Subject</p>
+                  <p className="font-semibold">Subject {index + 1}</p>
                   <p className="text-sm text-gray-600">Course Code</p>
                 </div>
 
