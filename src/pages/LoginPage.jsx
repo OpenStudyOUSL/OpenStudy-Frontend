@@ -1,55 +1,61 @@
-// LoginSplitPage.jsx
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+// LoginPage.jsx
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
-    const navigate = useNavigate();
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-    function login() {
-    axios.post(import.meta.env.VITE_BACKEND_URL + "/api/users/login", {
-      email: email,
-      password: password
-    }).then((res) => {
-      if (res.data.user == null) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const login = async () => {
+    try {
+      const res = await axios.post(
+        import.meta.env.VITE_BACKEND_URL + "/api/users/login",
+        {
+          email,
+          password,
+        }
+      );
+
+      if (!res.data.user) {
         toast.error(res.data.message);
         return;
       }
-      if(res.data.user.isBlocked){
+
+      if (res.data.user.isBlocked) {
         toast.error("Your account is blocked. Please contact support.");
         return;
       }
-      
+
       toast.success("Login successful");
       localStorage.setItem("token", res.data.token);
-      
+
       if (res.data.user.type === "admin") {
         navigate("/admin/dashboard");
       } else {
         navigate("/");
       }
-    }).catch((error) => {
+    } catch (error) {
+      console.error(error);
       toast.error("Login failed. Please check your credentials.");
-    });
-  }
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     login();
   };
-};
-
-export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-purple-700 to-purple-900 flex items-center justify-center p-6">
       <div className="w-full max-w-6xl bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
         <div className="grid md:grid-cols-2 min-h-155">
           
-          {/* LEFT SIDE - Branding / Description */}
+          {/* LEFT SIDE */}
           <div className="hidden md:flex flex-col justify-center p-12 lg:p-16 bg-linear-to-br from-purple-600/40 to-purple-800/40 relative overflow-hidden">
-            {/* Optional subtle background effect */}
             <div className="absolute inset-0 opacity-20">
               <div className="absolute -top-20 -left-20 w-96 h-96 bg-white rounded-full blur-3xl"></div>
             </div>
@@ -79,10 +85,10 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* RIGHT SIDE - Login Form */}
+          {/* RIGHT SIDE */}
           <div className="bg-white p-10 lg:p-16 flex flex-col justify-center">
             <div className="max-w-md mx-auto w-full">
-              {/* Mobile-only title */}
+
               <div className="md:hidden text-center mb-10">
                 <h2 className="text-4xl font-bold text-gray-900 mb-2">Open Study</h2>
                 <p className="text-gray-600">Welcome Back!</p>
@@ -91,9 +97,12 @@ export default function LoginPage() {
               <h2 className="text-3xl font-bold text-gray-900 mb-2 hidden md:block">
                 Welcome Back!
               </h2>
-              <p className="text-gray-600 mb-10 hidden md:block">Log in to continue</p>
+              <p className="text-gray-600 mb-10 hidden md:block">
+                Log in to continue
+              </p>
 
-              <form className="space-y-6">
+              {/* ✅ form submit fixed */}
+              <form className="space-y-6" onSubmit={handleSubmit}>
                 <div>
                   <label className="block text-gray-700 font-medium mb-2 text-sm">
                     Email
@@ -104,6 +113,7 @@ export default function LoginPage() {
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full px-5 py-4 rounded-xl border border-gray-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-200/30 outline-none transition-all"
                     placeholder="Enter your email"
+                    required
                   />
                 </div>
 
@@ -117,18 +127,18 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     className="w-full px-5 py-4 rounded-xl border border-gray-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-200/30 outline-none transition-all"
                     placeholder="••••••••••••"
+                    required
                   />
                 </div>
 
                 <div className="flex justify-end">
-                  <a href="#" className="text-purple-700 hover:text-purple-900 text-sm font-medium">
+                  <span className="text-purple-700 hover:text-purple-900 text-sm font-medium cursor-pointer">
                     Forgot password?
-                  </a>
+                  </span>
                 </div>
 
                 <button
                   type="submit"
-                  onClick={handleSubmit}
                   className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-4 rounded-xl transition duration-200 shadow-lg shadow-purple-500/30 mt-4"
                 >
                   Log in
@@ -136,11 +146,15 @@ export default function LoginPage() {
               </form>
 
               <p className="text-center mt-10 text-gray-600 text-sm">
-                Don't have an account?{' '}
-                <Link to="/signup" className="text-purple-700 font-medium hover:text-purple-900">
+                Don't have an account?{" "}
+                <Link
+                  to="/signup"
+                  className="text-purple-700 font-medium hover:text-purple-900"
+                >
                   Sign up
                 </Link>
               </p>
+
             </div>
           </div>
         </div>
