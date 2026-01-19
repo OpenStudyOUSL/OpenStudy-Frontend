@@ -9,7 +9,7 @@ const Footer = () => {
 
       <div className="relative mx-auto max-w-6xl px-6 py-8">
         {/* Main row */}
-        <div className="grid gap-6 md:grid-cols-2 items-center min-h-[120px]">
+        <div className="grid gap-6 md:grid-cols-2 items-center min-h-30">
           
           {/* Brand (vertically centered) */}
           <div className="flex flex-col justify-center h-full">
@@ -53,7 +53,7 @@ const Footer = () => {
                   className="
                     absolute left-1/2 -translate-x-1/2 -bottom-1
                     h-0.5 w-0
-                    bg-gradient-to-r from-red-700 to-rose-700
+                    bg-linear-to-r from-red-700 to-rose-700
                     transition-all duration-300
                     hover:w-4/5
                   "
@@ -65,7 +65,7 @@ const Footer = () => {
 
         {/* Divider */}
         <div className="mt-6">
-          <div className="h-px w-full bg-gradient-to-r from-transparent via-red-300/80 to-transparent" />
+          <div className="h-px w-full bg-linear-to-r from-transparent via-red-300/80 to-transparent" />
         </div>
 
         {/* Bottom — NO EXTRA GAP */}
