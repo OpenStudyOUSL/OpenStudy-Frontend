@@ -12,12 +12,9 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.90.1",
     "@tailwindcss/vite": "^4.1.18",
-<<<<<<< HEAD
     "express": "^5.2.1",
-=======
     "axios": "^1.13.2",
     "dotenv": "^17.2.3",
->>>>>>> 4e62abb768144d95255fb9419e5a8cbf8e95d4a1
     "framer-motion": "^12.26.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
