@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 export default function EditProfilePage() {
-  const defaultImage = "/default-Profile.jpg"; // public folder
+  const defaultImage = "../../../public/profile.jpg"; // public folder
 
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);

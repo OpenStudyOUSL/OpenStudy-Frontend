@@ -17,9 +17,9 @@ export default function SignUpSplitPage() {
 
   async function signUp() {
     try {
-      const res = await axios.post(
-        import.meta.env.VITE_BACKEND_URL + "/api/users/signup",
+      const res = await axios.post("http://localhost:3000/api/users/signup",
         {
+          profileImage,
           username,
           email,
           registerNumber,
@@ -79,14 +79,6 @@ export default function SignUpSplitPage() {
               </h2>
 
               <form className="space-y-5" onSubmit={handleFormSubmit}>
-                <input
-                  placeholder="Profile Image"
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setProfileImage(e.target.files[0])}
-                  className="w-full px-5 py-4 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-200 outline-none"
-                />
-
                 <input
                   type="text"
                   placeholder="Username"
