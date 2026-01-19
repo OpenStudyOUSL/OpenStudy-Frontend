@@ -1,22 +1,23 @@
-// LoginPage.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { Eye, EyeOff } from "lucide-react"; // ← add this import
 
 export default function LoginPage() {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // ← new state
 
   const login = async () => {
     try {
       const res = await axios.post(
-        import.meta.env.VITE_BACKEND_URL + "/api/users/login",
+        `${import.meta.env.VITE_BACKEND_URL}/api/users/login`,
         {
-          email,
-          password,
+          email: email,
+          password: password,
         }
       );
 
@@ -34,7 +35,7 @@ export default function LoginPage() {
       localStorage.setItem("token", res.data.token);
 
       if (res.data.user.type === "admin") {
-        navigate("/admin/dashboard");
+        navigate("/admin/");
       } else {
         navigate("/");
       }
@@ -52,8 +53,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-linear-to-br from-purple-700 to-purple-900 flex items-center justify-center p-6">
       <div className="w-full max-w-6xl bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
-        <div className="grid md:grid-cols-2 min-h-155">
-          
+        <div className="grid md:grid-cols-2 min-h-[155]">
           {/* LEFT SIDE */}
           <div className="hidden md:flex flex-col justify-center p-12 lg:p-16 bg-linear-to-br from-purple-600/40 to-purple-800/40 relative overflow-hidden">
             <div className="absolute inset-0 opacity-20">
@@ -64,7 +64,7 @@ export default function LoginPage() {
               <h1 className="text-5xl lg:text-6xl font-bold text-white mb-6">
                 Open Study
               </h1>
-              
+
               <p className="text-purple-100 text-xl lg:text-2xl leading-relaxed max-w-lg">
                 Your personalized learning companion
               </p>
@@ -77,7 +77,7 @@ export default function LoginPage() {
                   and continue your path to<br />
                   exam success.
                 </p>
-                
+
                 <p className="italic opacity-90">
                   "Study smarter. Achieve more."
                 </p>
@@ -88,7 +88,6 @@ export default function LoginPage() {
           {/* RIGHT SIDE */}
           <div className="bg-white p-10 lg:p-16 flex flex-col justify-center">
             <div className="max-w-md mx-auto w-full">
-
               <div className="md:hidden text-center mb-10">
                 <h2 className="text-4xl font-bold text-gray-900 mb-2">Open Study</h2>
                 <p className="text-gray-600">Welcome Back!</p>
@@ -101,7 +100,6 @@ export default function LoginPage() {
                 Log in to continue
               </p>
 
-              {/* ✅ form submit fixed */}
               <form className="space-y-6" onSubmit={handleSubmit}>
                 <div>
                   <label className="block text-gray-700 font-medium mb-2 text-sm">
@@ -117,18 +115,31 @@ export default function LoginPage() {
                   />
                 </div>
 
-                <div>
+                {/* Password field with toggle icon */}
+                <div className="relative">
                   <label className="block text-gray-700 font-medium mb-2 text-sm">
                     Password
                   </label>
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-5 py-4 rounded-xl border border-gray-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-200/30 outline-none transition-all"
+                    className="w-full px-5 py-4 rounded-xl border border-gray-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-200/30 outline-none transition-all pr-12"
                     placeholder="••••••••••••"
                     required
                   />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-10.5 text-gray-500 hover:text-gray-700 focus:outline-none"
+                  >
+                    {showPassword ? (
+                      <EyeOff size={22} />
+                    ) : (
+                      <Eye size={22} />
+                    )}
+                  </button>
                 </div>
 
                 <div className="flex justify-end">
@@ -154,7 +165,6 @@ export default function LoginPage() {
                   Sign up
                 </Link>
               </p>
-
             </div>
           </div>
         </div>

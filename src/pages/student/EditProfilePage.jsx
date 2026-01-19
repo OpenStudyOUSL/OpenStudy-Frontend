@@ -7,9 +7,6 @@ export default function EditProfilePage() {
 
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [number, setNumber] = useState("");
@@ -31,8 +28,6 @@ export default function EditProfilePage() {
 
         const user = res.data.user;
 
-        setFirstName(user.firstName || "");
-        setLastName(user.lastName || "");
         setUsername(user.userName || "");
         setEmail(user.email || "");
         setNumber(user.number || "");
@@ -68,8 +63,6 @@ export default function EditProfilePage() {
 
     try {
       const formData = new FormData();
-      formData.append("firstName", firstName);
-      formData.append("lastName", lastName);
       formData.append("userName", username);
       formData.append("email", email);
       formData.append("number", number);
@@ -135,8 +128,6 @@ export default function EditProfilePage() {
         {/* Form */}
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-10">
           <div className="space-y-8">
-            <Input label="First Name" value={firstName} onChange={setFirstName} />
-            <Input label="Last Name" value={lastName} onChange={setLastName} />
             <Input label="User Name" value={username} onChange={setUsername} />
             <Input label="Email" value={email} onChange={setEmail} />
             <Input label="Number" value={number} onChange={setNumber} />
