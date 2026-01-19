@@ -1,4 +1,15 @@
+import { Link } from "react-router-dom";
+
+
 const ProfileDashboard = () => {
+
+  const props = {
+    name: "John Doe",
+    regNo: "REG123456",
+    email: "sZBk0@example.com",
+  };
+
+
   return (
     <div className="min-h-screen bg-[#F3EFFF] p-6 flex justify-center">
       <div className="w-full max-w-6xl space-y-8">
@@ -7,9 +18,9 @@ const ProfileDashboard = () => {
         <div className="bg-linear-to-r from-[#8B5CF6] to-[#A78BFA] rounded-2xl p-6 text-white shadow-lg">
           <div className="flex justify-between items-start">
             <h2 className="text-2xl font-semibold">Profile</h2>
-            <button className="bg-[#7C3AED] px-4 py-1 rounded-lg text-sm shadow">
+            <Link to="/profile/edit" className="bg-[#7C3AED] px-4 py-1 rounded-lg text-sm shadow">
               Edit Profile
-            </button>
+            </Link>
           </div>
 
           <div className="flex flex-col md:flex-row items-center md:items-start gap-6 mt-6">
@@ -20,11 +31,10 @@ const ProfileDashboard = () => {
             />
 
             <div className="flex-1">
-              <h3 className="text-xl font-bold">A. Silva</h3>
+              <h3 className="text-xl font-bold">{props.name}</h3>
               <div className="flex flex-wrap gap-6 mt-2 text-sm">
-                <span>● 123456789</span>
-                <span>● First Year Student</span>
-                <span>● Last Active : 10.05 AM</span>
+                <span>● {props.regNo}</span>
+                <span>● {props.email}</span>
               </div>
 
               <div className="grid grid-cols-3 text-center mt-8">

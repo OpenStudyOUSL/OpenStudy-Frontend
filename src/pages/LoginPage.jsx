@@ -1,8 +1,44 @@
 // LoginSplitPage.jsx
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
-export default function LoginSplitPage() {
+export default function LoginPage() {
+    const navigate = useNavigate();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    function login() {
+    axios.post(import.meta.env.VITE_BACKEND_URL + "/api/users/login", {
+      email: email,
+      password: password
+    }).then((res) => {
+      if (res.data.user == null) {
+        toast.error(res.data.message);
+        return;
+      }
+      if(res.data.user.isBlocked){
+        toast.error("Your account is blocked. Please contact support.");
+        return;
+      }
+      
+      toast.success("Login successful");
+      localStorage.setItem("token", res.data.token);
+      
+      if (res.data.user.type === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/");
+      }
+    }).catch((error) => {
+      toast.error("Login failed. Please check your credentials.");
+    });
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    login();
+  };
+
   return (
     <div className="min-h-screen bg-linear-to-br from-purple-700 to-purple-900 flex items-center justify-center p-6">
       <div className="w-full max-w-6xl bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
@@ -57,12 +93,14 @@ export default function LoginSplitPage() {
               <form className="space-y-6">
                 <div>
                   <label className="block text-gray-700 font-medium mb-2 text-sm">
-                    Username
+                    Email
                   </label>
                   <input
-                    type="text"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="w-full px-5 py-4 rounded-xl border border-gray-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-200/30 outline-none transition-all"
-                    placeholder="Enter your username"
+                    placeholder="Enter your email"
                   />
                 </div>
 
@@ -72,6 +110,8 @@ export default function LoginSplitPage() {
                   </label>
                   <input
                     type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="w-full px-5 py-4 rounded-xl border border-gray-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-200/30 outline-none transition-all"
                     placeholder="••••••••••••"
                   />
@@ -85,6 +125,7 @@ export default function LoginSplitPage() {
 
                 <button
                   type="submit"
+                  onClick={handleSubmit}
                   className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-4 rounded-xl transition duration-200 shadow-lg shadow-purple-500/30 mt-4"
                 >
                   Log in

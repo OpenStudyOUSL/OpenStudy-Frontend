@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 
+
+
 function CourseCard(props) {
   return (
     <div className="w-80 h-105 bg-white rounded-2xl mt-10 mb-10 shadow-lg overflow-hidden 
