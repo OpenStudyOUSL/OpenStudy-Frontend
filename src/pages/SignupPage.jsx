@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-export default function SignUpSplitPage() {
+export default function SignUpPage() {
   const [profileImage, setProfileImage] = useState(null);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
