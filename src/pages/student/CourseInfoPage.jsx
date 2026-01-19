@@ -21,7 +21,7 @@ const CourseInfoPage = () => {
                     <a href="#" className="hover:underline">Contact us</a>
                 </nav>
                 <div className="w-9 h-9 rounded-full bg-white text-purple-600 flex items-center justify-center font-bold">
-                    U
+                    I
                 </div>
             </header>
 
