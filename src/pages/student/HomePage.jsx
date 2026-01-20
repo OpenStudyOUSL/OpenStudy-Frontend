@@ -1,6 +1,6 @@
 import CourseCard from "../../components/CourseCard";
 
-function HomePage() {
+export default function HomePage() {
   return (
     <>
     <section className="bg-purple-100">
@@ -60,4 +60,3 @@ function HomePage() {
   )
 };
 
-export default HomePage;

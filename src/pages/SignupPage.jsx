@@ -51,7 +51,7 @@ export default function SignUpPage() {
       );
 
       toast.success("User created successfully");
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       console.error(error);
       toast.error("User creation failed");

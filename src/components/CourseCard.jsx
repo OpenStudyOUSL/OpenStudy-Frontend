@@ -2,9 +2,9 @@ import { Link } from "react-router-dom";
 
 
 
-function CourseCard(props) {
+export default function CourseCard(props) {
   return (
-    <div className="w-80 h-105 bg-white rounded-2xl mt-10 mb-10 shadow-lg overflow-hidden 
+    <div className="w-80 h-112.5 bg-white rounded-2xl mt-10 mb-10 shadow-lg overflow-hidden 
                     hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 group">
 
       {/* Image Section */}
@@ -45,4 +45,4 @@ function CourseCard(props) {
   );
 }
 
-export default CourseCard;
+

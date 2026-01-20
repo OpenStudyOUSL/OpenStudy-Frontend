@@ -3,49 +3,54 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 export default function EditProfilePage() {
-  const defaultImage = "/profile.jpg"; // ✅ correct public path
+  const defaultImage = "/profile.jpg"; // place this file in public/ folder
 
   const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState(defaultImage);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [number, setNumber] = useState("");
-  const [degree, setDegree] = useState("");
   const [regNumber, setRegNumber] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
 
-  /* ================= LOAD USER DATA ================= */
+  // Load current user data
   useEffect(() => {
     const fetchProfile = async () => {
       try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          toast.error("Please login first");
+          return;
+        }
+
         const res = await axios.get(
-          import.meta.env.VITE_BACKEND_URL + "/api/users/profile",
+          `${import.meta.env.VITE_BACKEND_URL}/api/users/`,
           {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
 
-        const user = res.data.user;
+        // IMPORTANT: your getUser returns req.user directly — not { user: ... }
+        const user = res.data; // ← not res.data.user
 
-        setUsername(user.userName || "");
+        setUsername(user.userName || user.username || "");
         setEmail(user.email || "");
-        setNumber(user.number || "");
-        setDegree(user.degree || "");
-        setRegNumber(user.registerNumber || "");
+        setRegNumber(user.regNo || user.registerNumber || user.registrationNumber || "");
         setImagePreview(user.profilePicture || defaultImage);
       } catch (error) {
-        console.error(error);
-        toast.error("Failed to load profile");
+        console.error("Failed to load profile:", error);
+        toast.error("Could not load profile data");
+      } finally {
+        setFetching(false);
       }
     };
 
     fetchProfile();
   }, []);
 
-  /* ================= IMAGE HANDLING ================= */
+  // Handle image selection
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (!file) return;
 
     setImage(file);
@@ -57,24 +62,23 @@ export default function EditProfilePage() {
     setImagePreview(defaultImage);
   };
 
-  /* ================= SUBMIT ================= */
+  // Submit updated profile
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const formData = new FormData();
-      formData.append("userName", username);
-      formData.append("email", email);
-      formData.append("number", number);
-      formData.append("degree", degree);
-      formData.append("registerNumber", regNumber);
+      formData.append("userName", username.trim());
+      formData.append("email", email.trim());
+      formData.append("registerNumber", regNumber.trim()); // match backend field name
 
       if (image) {
         formData.append("profilePicture", image);
       }
 
       await axios.put(
-        import.meta.env.VITE_BACKEND_URL + "/api/users/profile",
+        `${import.meta.env.VITE_BACKEND_URL}/api/users/update`, // ← make sure this route exists!
         formData,
         {
           headers: {
@@ -84,84 +88,119 @@ export default function EditProfilePage() {
         }
       );
 
-      toast.success("Profile updated successfully");
+      toast.success("Profile updated successfully!");
     } catch (error) {
-      console.error(error);
-      toast.error("Profile update failed");
+      console.error("Profile update error:", error);
+      toast.error(error?.response?.data?.message || "Failed to update profile");
+    } finally {
+      setLoading(false);
     }
   };
 
+  if (fetching) {
+    return (
+      <div className="min-h-screen bg-purple-50 flex items-center justify-center">
+        <p className="text-purple-700 text-xl animate-pulse">Loading profile...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-purple-100 flex justify-center items-center px-6 py-10">
-      <div className="w-full max-w-5xl bg-purple-400 rounded-3xl shadow-2xl p-12">
-
-        <h1 className="text-3xl font-bold text-white mb-10">Profile</h1>
-
-        {/* Profile Image */}
-        <div className="flex flex-col items-center mb-12">
-          <img
-            src={imagePreview || defaultImage}
-            alt="Profile"
-            className="w-36 h-36 rounded-full object-cover border-4 border-white mb-4"
-          />
-
-          <label className="px-6 py-2 rounded-full border border-white text-white cursor-pointer hover:bg-white hover:text-purple-600 transition">
-            Edit Picture
-            <input
-              type="file"
-              accept="image/*"
-              hidden
-              onChange={handleImageChange}
-            />
-          </label>
-
-          {imagePreview && imagePreview !== defaultImage && (
-            <button
-              onClick={removeImage}
-              className="mt-3 px-6 py-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition"
-            >
-              Remove Picture
-            </button>
-          )}
+    <div className="min-h-screen bg-linear-to-br from-purple-50 to-purple-100 flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-2xl bg-white rounded-3xl shadow-xl overflow-hidden">
+        {/* Header */}
+        <div className="bg-purple-600 px-8 py-10 text-center">
+          <h1 className="text-3xl md:text-4xl font-bold text-white">Edit Profile</h1>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div className="space-y-8">
-            <Input label="User Name" value={username} onChange={setUsername} />
-            <Input label="Email" value={email} onChange={setEmail} />
-            <Input label="Number" value={number} onChange={setNumber} />
+        <div className="p-8 md:p-12">
+          {/* Profile Picture Section */}
+          <div className="flex flex-col items-center mb-10">
+            <div className="relative">
+              <img
+                src={imagePreview}
+                alt="Profile preview"
+                className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-purple-200 shadow-lg"
+              />
+              {imagePreview !== defaultImage && (
+                <button
+                  onClick={removeImage}
+                  className="absolute -bottom-2 -right-2 bg-red-500 text-white text-xs px-3 py-1 rounded-full shadow hover:bg-red-600 transition"
+                >
+                  Remove
+                </button>
+              )}
+            </div>
+
+            <label className="mt-6 px-6 py-3 bg-purple-600 text-white rounded-full cursor-pointer hover:bg-purple-700 transition font-medium shadow-md">
+              Change Profile Picture
+              <input
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={handleImageChange}
+              />
+            </label>
           </div>
 
-          <div className="space-y-8">
-            <Input label="Degree programme" value={degree} onChange={setDegree} />
-            <Input label="OUSL Register Number" value={regNumber} onChange={setRegNumber} />
-          </div>
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-8">
+            <Input
+              label="Username"
+              value={username}
+              onChange={setUsername}
+              placeholder="Enter your username"
+            />
+            <Input
+              label="Email Address"
+              value={email}
+              onChange={setEmail}
+              placeholder="your.email@example.com"
+              type="email"
+            />
+            <Input
+              label="OUSL Registration Number"
+              value={regNumber}
+              onChange={setRegNumber}
+              placeholder="E.g. 2021/ICT/123"
+            />
 
-          <div className="col-span-full flex justify-center mt-10">
-            <button
-              type="submit"
-              className="w-64 bg-white text-black text-xl font-semibold py-3 rounded-xl shadow-md hover:scale-105 transition"
-            >
-              Save
-            </button>
-          </div>
-        </form>
+            {/* Submit Button */}
+            <div className="pt-6">
+              <button
+                type="submit"
+                disabled={loading}
+                className={`
+                  w-full py-4 px-8 text-lg font-semibold rounded-2xl shadow-lg transition-all
+                  ${loading 
+                    ? "bg-gray-400 cursor-not-allowed" 
+                    : "bg-purple-600 hover:bg-purple-700 text-white hover:scale-[1.02]"}
+                `}
+              >
+                {loading ? "Saving..." : "Save Changes"}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
 }
 
-/* ================= INPUT COMPONENT ================= */
-function Input({ label, value, onChange }) {
+function Input({ label, value, onChange, placeholder = "", type = "text" }) {
   return (
-    <div>
-      <label className="text-black font-medium mb-2 block">{label}</label>
+    <div className="space-y-2">
+      <label className="block text-gray-700 font-medium">{label}</label>
       <input
-        type="text"
+        type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full bg-transparent border-b border-black outline-none py-2 text-black"
+        placeholder={placeholder}
+        className="
+          w-full px-4 py-3 rounded-xl border border-gray-300 
+          focus:border-purple-500 focus:ring-2 focus:ring-purple-200 
+          outline-none transition bg-white/70
+        "
       />
     </div>
   );
