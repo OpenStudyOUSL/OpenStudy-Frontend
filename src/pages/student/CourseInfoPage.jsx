@@ -1,77 +1,95 @@
-import React from "react";
+import axios from "axios";
+import React, { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import QuizTopicCard from "../../components/CourseTopicCard";
 
-const CourseInfoPage = () => {
-    const quizzes = [
-        { title: "Topic of Quiz one", count: 5 },
-        { title: "Topic of Quiz two", count: 4 },
-        { title: "Topic of Quiz three", count: 8 },
-        { title: "Topic of Quiz four", count: 10 },
-        { title: "Topic of Quiz five", count: 9 },
-    ];
+export default function CourseInfoPage() {
+  const { courseId } = useParams();
 
+  const [quizzes, setQuizzes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchQuizzes = async () => {
+      if (!courseId) return;
+
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Adjust endpoint if your API route is different
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/quizzes/course/${courseId}`);
+        setQuizzes(res.data || []);
+        console.log("Quizzes loaded:", res.data);
+      } catch (err) {
+        console.error("Failed to load quizzes:", err);
+        setError("Could not load quizzes. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchQuizzes();
+  }, [courseId]);
+
+  if (loading) {
     return (
-        <div className="min-h-screen flex flex-col bg-purple-50">
-            {/* Header */}
-            <header className="bg-purple-600 text-white px-8 py-4 flex justify-between items-center">
-                <h1 className="text-2xl font-bold">Open Study</h1>
-                <nav className="space-x-6 hidden md:flex">
-                    <a href="#" className="hover:underline">Courses</a>
-                    <a href="#" className="hover:underline">Leaderboard</a>
-                    <a href="#" className="hover:underline">Help</a>
-                    <a href="#" className="hover:underline">Contact us</a>
-                </nav>
-                <div className="w-9 h-9 rounded-full bg-white text-purple-600 flex items-center justify-center font-bold">
-                    I
-                </div>
-            </header>
-
-            {/* Content */}
-            <main className="grow px-6 md:px-16 py-10">
-                <h2 className="text-2xl font-bold text-gray-800 mb-8">Course Name</h2>
-
-                <div className="space-y-4">
-                    {quizzes.map((quiz, index) => (
-                        <div
-                            key={index}
-                            className="bg-linear-to-r from-purple-300 to-purple-200 rounded-xl px-6 py-5 flex items-center justify-between shadow"
-                        >
-                            <h3 className="text-lg font-semibold text-gray-800">
-                                {quiz.title}
-                            </h3>
-
-                            <div className="flex items-center gap-6">
-                                <span className="text-gray-700 font-medium">
-                                    Quizzes {quiz.count}
-                                </span>
-                                <button className="bg-white text-purple-700 px-5 py-2 rounded-lg font-semibold shadow hover:bg-purple-100 transition">
-                                    Attempt
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </main>
-
-            {/* Footer */}
-            <footer className="bg-purple-600 text-white py-6 mt-10">
-                <div className="flex flex-col md:flex-row items-center justify-between px-8">
-                    <div>
-                        <h3 className="text-xl font-bold">Open Study</h3>
-                        <p className="text-xs mt-1">Study Smart, Score High</p>
-                    </div>
-                    <nav className="space-x-4 mt-4 md:mt-0 text-sm">
-                        <a href="#" className="hover:underline">Home</a>
-                        <a href="#" className="hover:underline">Quiz</a>
-                        <a href="#" className="hover:underline">Leaderboard</a>
-                        <a href="#" className="hover:underline">Help</a>
-                        <a href="#" className="hover:underline">Contact us</a>
-                        <a href="#" className="hover:underline">About Us</a>
-                    </nav>
-                </div>
-                <p className="text-center text-xs mt-4">© 2026 Open Study. All Rights Reserved.</p>
-            </footer>
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-purple-50">
+        <p className="text-xl text-gray-600 animate-pulse">Loading quizzes...</p>
+      </div>
     );
-};
+  }
 
-export default CourseContentPage;
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-purple-50">
+        <p className="text-xl text-red-600">{error}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col bg-purple-50">
+      {/* Optional header / course title area */}
+      <header className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-6 md:px-16 py-6">
+          <h1 className="text-3xl font-bold text-gray-800">
+            Course Quizzes
+          </h1>
+          <p className="mt-2 text-gray-600">
+            Course ID: {courseId}
+          </p>
+        </div>
+      </header>
+
+      <main className="grow px-6 md:px-16 py-10">
+        {quizzes.length === 0 ? (
+          <div className="text-center py-16 bg-white rounded-2xl shadow-sm">
+            <h2 className="text-2xl font-semibold text-gray-700 mb-3">
+              No quizzes available yet
+            </h2>
+            <p className="text-gray-600">
+              Check back later or contact your instructor.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {quizzes.map((quiz) => (
+              <QuizTopicCard
+                key={quiz.id || quiz._id}
+                topicName={quiz.title || quiz.topic || "Untitled Quiz"}
+                quizCount={quiz.questionsCount || quiz.quizCount || 0}
+                image={quiz.imageUrl || quiz.coverImage} // optional
+                description={quiz.description || quiz.shortDescription}
+                // instructor={quiz.createdBy?.name}         // optional
+                linkTo={`/quiz/${quiz.id || quiz._id}/attempt`} // or /quiz/start/${quiz.id}
+                // onAttempt={() => console.log("Start quiz", quiz.id)} // if not using Link
+              />
+            ))}
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}
