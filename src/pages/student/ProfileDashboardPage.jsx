@@ -29,6 +29,7 @@ const ProfileDashboard = () => {
         );
         
         setUser(res.data);
+        console.log(res.data);
 
       } catch (err) {
         console.error(err);
