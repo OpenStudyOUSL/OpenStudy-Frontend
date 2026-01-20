@@ -37,7 +37,7 @@ export default function CourseCard(props) {
         </div>
 
         {/* Button */}
-        <Link to="/quizs" className="mt-6 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 hover:scale-105 transition-all duration-300">
+        <Link to={`/courseinfo/${props.courseId}`} className="mt-6 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 hover:scale-105 transition-all duration-300">
           View Course
         </Link>
       </div>

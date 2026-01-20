@@ -13,6 +13,7 @@ import ContactusPage from "./pages/ContactusPage";
 import EditProfilePage from "./pages/student/EditProfilePage";
 import CoursePage from "./pages/student/CoursesPage";
 import LeaderboardPage from "./pages/student/LeaderBoradPage";
+import CourseInfoPage from "./pages/student/CourseInfoPage";
 
 
 function FirstLayout() {
@@ -55,10 +56,12 @@ function App() {
           <Route path="/profile" element={<ProfileDashboard />} />
           <Route path="/profile/edit" element={<EditProfilePage />} />
           <Route path='/contact' element={<ContactusPage />} />
-          <Route path="/Course" element={<CoursePage />} />
           <Route path="/Leaderboard" element={<LeaderboardPage />} />
-
+          <Route path="/Course" element={<CoursePage />} />
+          <Route path="/courseinfo/:courseId" element={<CourseInfoPage />} />
+          <Route path="/quiz" element={<div>Quiz Page</div>} />
           
+
         </Route>
 
         {/* Admin area — NO Navbar/Footer */}
