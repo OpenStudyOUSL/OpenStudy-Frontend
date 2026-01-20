@@ -2,23 +2,20 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Eye, EyeOff } from "lucide-react"; // ← add this import
+import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // ← new state
+  const [showPassword, setShowPassword] = useState(false);
 
   const login = async () => {
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/users/login`,
-        {
-          email: email,
-          password: password,
-        }
+        { email, password }
       );
 
       if (!res.data.user) {
@@ -51,26 +48,37 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-purple-700 to-purple-900 flex items-center justify-center p-6">
-      <div className="w-full max-w-6xl bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
-        <div className="grid md:grid-cols-2 min-h-[155]">
-          {/* LEFT SIDE */}
-          <div className="hidden md:flex flex-col justify-center p-12 lg:p-16 bg-linear-to-br from-purple-600/40 to-purple-800/40 relative overflow-hidden">
-            <div className="absolute inset-0 opacity-20">
-              <div className="absolute -top-20 -left-20 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-            </div>
+    <div className="min-h-screen relative overflow-hidden bg-linear-to-br from-red-50 via-rose-50 to-white flex items-center justify-center p-6">
+      {/* Soft overlay + glows (like About page) */}
+      <div className="absolute inset-0 bg-linear-to-br from-red-700/10 via-rose-600/6 to-transparent" />
+      <div className="pointer-events-none absolute -top-48 -right-40 h-[26rem] w-[26rem] rounded-full bg-red-400/20 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-52 -left-40 h-[28rem] w-[28rem] rounded-full bg-rose-400/20 blur-3xl" />
+
+      {/* Card */}
+      <div className="relative w-full max-w-6xl rounded-3xl border border-red-200/60 bg-white/75 backdrop-blur-xl shadow-2xl shadow-red-900/10 overflow-hidden">
+        <div className="grid md:grid-cols-2">
+          {/* LEFT SIDE (brand panel) */}
+          <div className="hidden md:flex flex-col justify-center p-12 lg:p-16 relative overflow-hidden bg-linear-to-br from-red-700 via-rose-700 to-red-800 text-white">
+            {/* glow inside */}
+            <div className="pointer-events-none absolute -top-20 -left-20 h-80 w-80 rounded-full bg-white/15 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-white/10 blur-3xl" />
 
             <div className="relative z-10">
-              <h1 className="text-5xl lg:text-6xl font-bold text-white mb-6">
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold">
+                <span className="h-1.5 w-1.5 rounded-full bg-white" />
+                OUSL Student Project
+              </div>
+
+              <h1 className="mt-6 text-5xl lg:text-6xl font-extrabold tracking-tight">
                 Open Study
               </h1>
 
-              <p className="text-purple-100 text-xl lg:text-2xl leading-relaxed max-w-lg">
+              <p className="mt-4 text-red-50/90 text-xl lg:text-2xl leading-relaxed max-w-lg">
                 Your personalized learning companion
               </p>
 
-              <div className="mt-10 text-purple-50 text-lg">
-                <p className="mb-6">
+              <div className="mt-10 text-red-50/90 text-lg">
+                <p className="mb-6 leading-relaxed">
                   Access your personalized dashboard,<br />
                   track your quiz performance,<br />
                   review your progress,<br />
@@ -79,21 +87,24 @@ export default function LoginPage() {
                 </p>
 
                 <p className="italic opacity-90">
-                  "Study smarter. Achieve more."
+                  “Study smarter. Achieve more.”
                 </p>
               </div>
             </div>
           </div>
 
-          {/* RIGHT SIDE */}
-          <div className="bg-white p-10 lg:p-16 flex flex-col justify-center">
+          {/* RIGHT SIDE (form) */}
+          <div className="bg-white/90 p-10 lg:p-16 flex flex-col justify-center">
             <div className="max-w-md mx-auto w-full">
+              {/* Mobile heading */}
               <div className="md:hidden text-center mb-10">
-                <h2 className="text-4xl font-bold text-gray-900 mb-2">Open Study</h2>
+                <h2 className="text-4xl font-extrabold tracking-tight text-gray-900 mb-2">
+                  Open Study
+                </h2>
                 <p className="text-gray-600">Welcome Back!</p>
               </div>
 
-              <h2 className="text-3xl font-bold text-gray-900 mb-2 hidden md:block">
+              <h2 className="text-3xl font-extrabold text-gray-900 mb-2 hidden md:block">
                 Welcome Back!
               </h2>
               <p className="text-gray-600 mb-10 hidden md:block">
@@ -101,30 +112,47 @@ export default function LoginPage() {
               </p>
 
               <form className="space-y-6" onSubmit={handleSubmit}>
-                <div>
-                  <label className="block text-gray-700 font-medium mb-2 text-sm">
+                {/* Email */}
+                <div className="group">
+                  <label className="block text-gray-700 font-semibold mb-2 text-sm">
                     Email
                   </label>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-5 py-4 rounded-xl border border-gray-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-200/30 outline-none transition-all"
+                    className="
+                      w-full px-5 py-4 rounded-xl border border-gray-300
+                      bg-white
+                      outline-none
+                      transition-all duration-300
+                      focus:border-red-500 focus:ring-4 focus:ring-red-200/60
+                      hover:border-gray-400
+                    "
                     placeholder="Enter your email"
                     required
                   />
                 </div>
 
-                {/* Password field with toggle icon */}
-                <div className="relative">
-                  <label className="block text-gray-700 font-medium mb-2 text-sm">
+                {/* Password */}
+                <div className="relative group">
+                  <label className="block text-gray-700 font-semibold mb-2 text-sm">
                     Password
                   </label>
+
                   <input
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-5 py-4 rounded-xl border border-gray-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-200/30 outline-none transition-all pr-12"
+                    className="
+                      w-full px-5 py-4 rounded-xl border border-gray-300
+                      bg-white
+                      outline-none
+                      transition-all duration-300
+                      focus:border-red-500 focus:ring-4 focus:ring-red-200/60
+                      hover:border-gray-400
+                      pr-12
+                    "
                     placeholder="••••••••••••"
                     required
                   />
@@ -132,38 +160,58 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-10.5 text-gray-500 hover:text-gray-700 focus:outline-none"
+                    className="
+                      absolute right-4 top-10.5
+                      text-gray-500
+                      transition-colors duration-200
+                      hover:text-gray-700
+                      focus:outline-none
+                    "
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
-                    {showPassword ? (
-                      <EyeOff size={22} />
-                    ) : (
-                      <Eye size={22} />
-                    )}
+                    {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
                   </button>
                 </div>
 
+                {/* Forgot */}
                 <div className="flex justify-end">
-                  <span className="text-purple-700 hover:text-purple-900 text-sm font-medium cursor-pointer">
+                  <span className="text-red-700 hover:text-red-900 text-sm font-semibold cursor-pointer transition-colors">
                     Forgot password?
                   </span>
                 </div>
 
+                {/* Button */}
                 <button
                   type="submit"
-                  className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-4 rounded-xl transition duration-200 shadow-lg shadow-purple-500/30 mt-4"
+                  className="
+                    w-full rounded-xl
+                    bg-linear-to-r from-red-700 via-rose-700 to-red-800
+                    text-white font-semibold
+                    py-4
+                    shadow-lg shadow-red-700/20
+                    transition-all duration-300
+                    hover:-translate-y-0.5 hover:shadow-xl hover:shadow-red-700/25
+                    focus:outline-none focus:ring-4 focus:ring-red-300
+                  "
                 >
                   Log in
                 </button>
               </form>
 
               <p className="text-center mt-10 text-gray-600 text-sm">
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <Link
                   to="/signup"
-                  className="text-purple-700 font-medium hover:text-purple-900"
+                  className="text-red-700 font-semibold hover:text-red-900 transition-colors"
                 >
                   Sign up
                 </Link>
+              </p>
+
+              {/* small divider hint */}
+              <div className="mt-8 h-px w-full bg-linear-to-r from-transparent via-red-200/80 to-transparent" />
+              <p className="mt-4 text-center text-xs text-gray-500">
+                By continuing, you agree to our terms and privacy policy.
               </p>
             </div>
           </div>
