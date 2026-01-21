@@ -14,6 +14,7 @@ import EditProfilePage from "./pages/student/EditProfilePage";
 import CoursePage from "./pages/student/CoursesPage";
 import LeaderboardPage from "./pages/student/LeaderBoradPage";
 import CourseInfoPage from "./pages/student/CourseInfoPage";
+import QuizPage from "./pages/student/QuizPage";
 
 
 function FirstLayout() {
@@ -59,14 +60,14 @@ function App() {
           <Route path="/Leaderboard" element={<LeaderboardPage />} />
           <Route path="/Course" element={<CoursePage />} />
           <Route path="/courseinfo/:courseId" element={<CourseInfoPage />} />
-          <Route path="/quiz" element={<div>Quiz Page</div>} />
+          <Route path="/quiz" element={<QuizPage />} />
           
 
         </Route>
 
         {/* Admin area — NO Navbar/Footer */}
         <Route path="/admin/*" element={<AdminLayout />}>
-          <Route path="*" element={<AdminDashboard />} />
+          <Route path="dashboard" element={<AdminDashboard />} />
           {/* 
             You can add more admin sub-routes later like this:
             <Route path="users" element={<AdminUsers />} />

@@ -35,7 +35,7 @@ export default function LoginPage() {
       localStorage.setItem("token", res.data.token);
 
       if (res.data.user.type === "admin") {
-        navigate("/admin/");
+        navigate("/admin/dashboard");
       } else {
         navigate("/");
       }
