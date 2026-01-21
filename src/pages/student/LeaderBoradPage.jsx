@@ -130,8 +130,8 @@ function LeaderboardPage() {
     <div className="min-h-[calc(100vh-140px)] relative overflow-hidden bg-linear-to-br from-red-50 via-rose-50 to-white">
       {/* About-style overlay + glows */}
       <div className="absolute inset-0 bg-linear-to-br from-red-700/10 via-rose-600/6 to-transparent" />
-      <div className="pointer-events-none absolute -top-48 -right-40 h-[26rem] w-[26rem] rounded-full bg-red-400/20 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-52 -left-40 h-[28rem] w-[28rem] rounded-full bg-rose-400/20 blur-3xl" />
+      <div className="pointer-events-none absolute -top-48 -right-40 h-104 w-104 rounded-full bg-red-400/20 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-52 -left-40 h-112 w-md rounded-full bg-rose-400/20 blur-3xl" />
 
       <div className="relative mx-auto max-w-6xl px-4 py-10">
         {/* Title */}
