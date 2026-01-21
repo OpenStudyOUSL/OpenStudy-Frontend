@@ -8,8 +8,8 @@ export default function HomePage() {
       <section className="relative overflow-hidden bg-linear-to-br from-red-50 via-rose-50 to-white">
         {/* soft overlays + glows */}
         <div className="absolute inset-0 bg-linear-to-br from-red-700/10 via-rose-600/6 to-transparent" />
-        <div className="pointer-events-none absolute -top-48 -right-40 h-[26rem] w-[26rem] rounded-full bg-red-400/20 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-52 -left-40 h-[28rem] w-[28rem] rounded-full bg-rose-400/20 blur-3xl" />
+        <div className="pointer-events-none absolute -top-48 -right-40 h-104 w-104 rounded-full bg-red-400/20 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-52 -left-40 h-112 w-md rounded-full bg-rose-400/20 blur-3xl" />
         <div className="absolute inset-x-0 bottom-0 h-px bg-linear-to-r from-transparent via-red-200/70 to-transparent" />
 
         <div className="relative max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-10 items-center">

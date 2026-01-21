@@ -68,7 +68,7 @@ function AdminDashboard() {
     shadow-sm
   "
             >
-              Users
+              Students
             </div>
 
             <div
