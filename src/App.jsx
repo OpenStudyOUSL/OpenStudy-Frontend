@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes, Outlet } from "react-router-dom";
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import HomePage from "./pages/student/HomePage";
