@@ -40,7 +40,7 @@ export default function QuizTopicCard(props) {
           {/* Attempt button - white pill */}
           {props.linkTo ? (
             <Link
-              to={props.linkTo}
+              to="/quiz"
               className="
                 bg-white 
                 text-purple-700
