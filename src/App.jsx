@@ -15,6 +15,7 @@ import CoursePage from "./pages/student/CoursesPage";
 import LeaderboardPage from "./pages/student/LeaderBoradPage";
 import CourseInfoPage from "./pages/student/CourseInfoPage";
 import QuizPage from "./pages/student/QuizPage";
+import HelpPage from "./pages/student/HelpPage";//paruma
 
 
 function FirstLayout() {
@@ -61,6 +62,7 @@ function App() {
           <Route path="/Course" element={<CoursePage />} />
           <Route path="/courseinfo/:courseId" element={<CourseInfoPage />} />
           <Route path="/quiz" element={<QuizPage />} />
+           <Route path="/help" element={<HelpPage />} />
           
 
         </Route>
