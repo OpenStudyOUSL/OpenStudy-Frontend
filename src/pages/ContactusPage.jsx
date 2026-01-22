@@ -1,8 +1,44 @@
+import { useState } from "react";
+
 const ContactusPage = () => {
+  const [fromEmail, setFromEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [isSending, setIsSending] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSending(true);
+
+    try {
+      const res = await fetch("http://localhost:3000/api/contact", {
+
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fromEmail, subject, message }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data?.error || "Failed to send email");
+      }
+
+      alert("Email sent successfully!");
+      setFromEmail("");
+      setSubject("");
+      setMessage("");
+    } catch (err) {
+      console.error(err);
+      alert(err.message || "Something went wrong");
+    } finally {
+      setIsSending(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-linear-to-br from-red-50 via-rose-50 to-white">
       <main className="flex flex-1">
-        
         {/* Left Form Section */}
         <div className="w-1/2 px-30 flex items-center">
           <div>
@@ -20,14 +56,15 @@ const ContactusPage = () => {
               academic journey.
             </p>
 
-            <form className="space-y-8 max-w-md">
-              {/* Name */}
+            <form onSubmit={handleSubmit} className="space-y-8 max-w-md">
+              {/* Email (was Name) */}
               <div>
-                <label className="block text-sm mb-1 text-gray-800">
-                  Name
-                </label>
+                <label className="block text-sm mb-1 text-gray-800">Email</label>
                 <input
-                  type="text"
+                  type="email"
+                  value={fromEmail}
+                  onChange={(e) => setFromEmail(e.target.value)}
+                  required
                   className="
                     w-full bg-transparent border-b border-gray-400
                     focus:outline-none focus:border-red-600
@@ -43,6 +80,9 @@ const ContactusPage = () => {
                 </label>
                 <input
                   type="text"
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                  required
                   className="
                     w-full bg-transparent border-b border-gray-400
                     focus:outline-none focus:border-red-600
@@ -56,12 +96,16 @@ const ContactusPage = () => {
                 <label className="block text-sm mb-2 text-gray-800">
                   Description
                 </label>
-                <textarea
-                  rows="4"
+                
+                <input
+                  type="text"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  required
                   className="
-                    w-full bg-red-50 rounded-md p-3
-                    text-gray-900
-                    focus:outline-none focus:ring-2 focus:ring-red-400
+                    w-full bg-transparent border-b border-gray-400
+                    focus:outline-none focus:border-red-600
+                    py-2 text-gray-900
                   "
                 />
               </div>
@@ -69,6 +113,7 @@ const ContactusPage = () => {
               {/* Submit */}
               <button
                 type="submit"
+                disabled={isSending}
                 className="
                   bg-linear-to-r from-red-600 to-rose-600
                   text-white px-8 py-2 rounded-lg
@@ -76,9 +121,10 @@ const ContactusPage = () => {
                   shadow-md
                   hover:from-red-700 hover:to-rose-700
                   transition-all duration-300
+                  disabled:opacity-60 disabled:cursor-not-allowed
                 "
               >
-                Submit
+                {isSending ? "Sending..." : "Submit"}
               </button>
             </form>
           </div>
@@ -92,7 +138,6 @@ const ContactusPage = () => {
             className="w-full h-full object-cover"
           />
         </div>
-
       </main>
     </div>
   );
