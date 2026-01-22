@@ -2,12 +2,17 @@ import { useEffect, useState } from "react";
 import CourseCard from "../../components/CourseCard";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function CoursePage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true); // better as boolean
   const [courses, setCourses] = useState([]);   // all courses from API
   const [filteredCourses, setFilteredCourses] = useState([]); // displayed courses
+
+
+  const { courseId } = useParams();
+  const navigate = useNavigate();
 
   // Fetch courses once on mount
   useEffect(() => {
@@ -26,7 +31,17 @@ export default function CoursePage() {
     };
 
     fetchCourses();
+
+    
   }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("You need to login to view this course");
+      navigate("/login");
+    }
+  }, [navigate]);
 
   // Filter courses whenever search or courses change
   useEffect(() => {

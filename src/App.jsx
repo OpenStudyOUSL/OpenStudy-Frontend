@@ -61,8 +61,8 @@ function App() {
           <Route path="/Leaderboard" element={<LeaderboardPage />} />
           <Route path="/Course" element={<CoursePage />} />
           <Route path="/courseinfo/:courseId" element={<CourseInfoPage />} />
-          <Route path="/quiz" element={<QuizPage />} />
-           <Route path="/help" element={<HelpPage />} />
+          <Route path="/courseinfo/:courseId/:topic" element={<QuizPage />} />
+          <Route path="/help" element={<HelpPage />} />
           
 
         </Route>
