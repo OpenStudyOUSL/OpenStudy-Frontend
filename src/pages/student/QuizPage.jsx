@@ -1,51 +1,60 @@
-// src/pages/QuizPage.jsx   (or wherever you place it)
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
+// src/pages/QuizPage.jsx
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import QuizCard from "../../components/quizCard";
 
-const QuizPage = () => {
-  const { quizId } = useParams(); // or courseId — adjust according to your route
+
+export default function QuizPage() {
+  const { courseId, topic } = useParams(); // assuming route: /course/:courseId/quiz/:topic
 
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // per question states
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false);
-
-  // overall quiz tracking
   const [score, setScore] = useState(0);
 
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/quizzes/course/${courseId}`);
+        setError(null);
 
-        const data = res.data;
-        console.log('Quiz questions loaded:', data);
+        const encodedTopic = encodeURIComponent(topic);
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/quizzes/course/${courseId}/topic/${encodedTopic}`
+        );
 
-        const qArray = Array.isArray(data) ? data : [data];
+        const data = Array.isArray(res.data) ? res.data : [];
+        if (data.length === 0) {
+          throw new Error("No questions found for this topic");
+        }
 
-        setQuestions(qArray);
+        setQuestions(data);
       } catch (err) {
         console.error(err);
-        setError('Failed to load quiz questions');
+        setError("Failed to load questions. Please try again.");
       } finally {
         setLoading(false);
       }
     };
 
-    if (quizId) fetchQuestions();
-  }, [quizId]);
+    if (courseId && topic) {
+      fetchQuestions();
+    }
+  }, [courseId, topic]);
 
   if (loading) {
     return (
       <div className="min-h-screen bg-purple-50 flex items-center justify-center">
-        <p className="text-xl text-purple-700">Loading quiz...</p>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-purple-500 border-t-transparent mx-auto mb-4"></div>
+          <p className="text-xl text-gray-700">Loading quiz...</p>
+        </div>
       </div>
     );
   }
@@ -53,29 +62,23 @@ const QuizPage = () => {
   if (error || questions.length === 0) {
     return (
       <div className="min-h-screen bg-purple-50 flex items-center justify-center">
-        <p className="text-xl text-red-600">{error || 'No questions found'}</p>
+        <div className="text-center max-w-md px-6">
+          <h2 className="text-2xl font-bold text-red-600 mb-4">Error</h2>
+          <p className="text-lg text-gray-700">{error || "No questions available for this topic."}</p>
+        </div>
       </div>
     );
   }
 
   const currentQuestion = questions[currentIndex];
   const isLastQuestion = currentIndex === questions.length - 1;
-  const isTrueFalse = currentQuestion.questionType === 'TRUE_FALSE';
 
   const handleAnswer = (answer) => {
-    if (selectedAnswer !== null) return; // already answered
+    if (selectedAnswer !== null) return;
 
     setSelectedAnswer(answer);
 
-    let correct = false;
-
-    if (isTrueFalse) {
-      correct = answer === currentQuestion.correctAnswer;
-    } else {
-      // MCQ → assuming correctAnswer is one of the strings in options
-      correct = answer === currentQuestion.correctAnswer;
-    }
-
+    const correct = answer === currentQuestion.correctAnswer;
     setIsCorrect(correct);
     setShowFeedback(true);
 
@@ -84,171 +87,81 @@ const QuizPage = () => {
     }
   };
 
-  const handleNext = () => {
+  const nextQuestion = () => {
     if (isLastQuestion) {
-      alert(`Quiz finished!\nScore: ${score} / ${questions.length}`);
-      // You can later: navigate to result page, save score to backend, etc.
+      // You can replace with a nice result page/modal later
+      alert(
+        `Quiz completed!\n\nScore: ${score} out of ${questions.length}\n(${Math.round((score / questions.length) * 100)}%)`
+      );
       return;
     }
 
     setCurrentIndex((prev) => prev + 1);
-    resetQuestionState();
+    resetState();
   };
 
-  const handlePrevious = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex((prev) => prev - 1);
-      resetQuestionState();
-    }
+  const prevQuestion = () => {
+    if (currentIndex === 0) return;
+    setCurrentIndex((prev) => prev - 1);
+    resetState();
   };
 
-  const resetQuestionState = () => {
+  const resetState = () => {
     setSelectedAnswer(null);
     setIsCorrect(null);
     setShowFeedback(false);
   };
 
   return (
-    <div className="min-h-screen bg-purple-50 flex flex-col">
+    <div className="min-h-screen bg-purple-50/40 flex flex-col">
+      {/* Progress dots */}
+      <div className="flex justify-center gap-3 py-6 bg-white/30 backdrop-blur-sm">
+        {questions.map((_, idx) => (
+          <div
+            key={idx}
+            className={`w-3.5 h-3.5 rounded-full transition-all duration-300 ${
+              idx === currentIndex
+                ? "bg-black scale-125 shadow-md"
+                : idx < currentIndex
+                ? "bg-green-500"
+                : "bg-gray-300"
+            }`}
+          />
+        ))}
+      </div>
 
-      {/* Header – optional */}
-      <header className="bg-purple-700 text-white py-4 px-6 shadow">
-        <h1 className="text-2xl font-bold text-center">
-          {currentQuestion.topic || 'Quiz'}
-        </h1>
-      </header>
+      <main className="grow flex items-center justify-center p-4 md:p-8">
+        <div className="w-full max-w-3xl">
+          <QuizCard
+            question={currentQuestion.question}
+            options={currentQuestion.options || []}
+            correctAnswer={currentQuestion.correctAnswer}
+            questionType={currentQuestion.questionType}
+            selectedAnswer={selectedAnswer}
+            isCorrect={isCorrect}
+            showFeedback={showFeedback}
+            onAnswer={handleAnswer}
+          />
 
-      <main className="grow flex flex-col items-center p-6">
+          {/* Navigation */}
+          <div className="mt-10 flex justify-between items-center max-w-md mx-auto">
+            <button
+              onClick={prevQuestion}
+              disabled={currentIndex === 0}
+              className="px-8 py-3.5 bg-gray-200 text-gray-800 font-medium rounded-full disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 transition"
+            >
+              ← Previous
+            </button>
 
-        {/* Progress */}
-        <div className="flex space-x-3 mb-8">
-          {questions.map((_, idx) => (
-            <div
-              key={idx}
-              className={`w-4 h-4 rounded-full transition-colors ${
-                idx === currentIndex
-                  ? 'bg-black scale-125'
-                  : idx < currentIndex
-                  ? 'bg-purple-400'
-                  : 'bg-gray-300'
-              }`}
-            />
-          ))}
-        </div>
-
-        {/* Question Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-6 md:p-10 max-w-3xl w-full text-center">
-          <p className="text-xl md:text-2xl font-medium text-gray-800 mb-10 leading-relaxed">
-            {currentQuestion.question}
-          </p>
-
-          {/* Answers */}
-          <div className="space-y-4 max-w-lg mx-auto">
-            {isTrueFalse ? (
-              <>
-                <button
-                  onClick={() => handleAnswer('True')}
-                  disabled={selectedAnswer !== null}
-                  className={`w-full py-5 text-xl font-semibold rounded-full border-2 transition-all
-                    ${
-                      selectedAnswer === 'True'
-                        ? isCorrect
-                          ? 'bg-green-500 border-green-600 text-white'
-                          : 'bg-red-500 border-red-600 text-white'
-                        : 'bg-white border-gray-300 hover:bg-gray-100 active:bg-gray-200'
-                    }`}
-                >
-                  ● True
-                </button>
-
-                <button
-                  onClick={() => handleAnswer('False')}
-                  disabled={selectedAnswer !== null}
-                  className={`w-full py-5 text-xl font-semibold rounded-full border-2 transition-all
-                    ${
-                      selectedAnswer === 'False'
-                        ? isCorrect === false
-                          ? 'bg-red-500 border-red-600 text-white'
-                          : 'bg-green-500 border-green-600 text-white'
-                        : 'bg-white border-gray-300 hover:bg-gray-100 active:bg-gray-200'
-                    }`}
-                >
-                  ○ False
-                </button>
-              </>
-            ) : (
-              // MCQ
-              currentQuestion.options.map((option, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => handleAnswer(option)}
-                  disabled={selectedAnswer !== null}
-                  className={`w-full py-4 px-6 text-lg font-medium rounded-xl border-2 transition-all
-                    ${
-                      selectedAnswer === option
-                        ? isCorrect
-                          ? 'bg-green-500 border-green-600 text-white'
-                          : 'bg-red-500 border-red-600 text-white'
-                        : 'bg-white border-gray-300 hover:bg-gray-50 active:bg-gray-200'
-                    }`}
-                >
-                  {option}
-                </button>
-              ))
-            )}
+            <button
+              onClick={nextQuestion}
+              className="px-10 py-3.5 bg-black text-white font-semibold rounded-full hover:bg-gray-900 transition shadow-md"
+            >
+              {isLastQuestion ? "Finish Quiz" : "Next →"}
+            </button>
           </div>
-
-          {/* Feedback */}
-          {showFeedback && (
-            <div className="mt-10 text-lg font-medium">
-              {isCorrect ? (
-                <div className="text-green-600 flex items-center justify-center gap-3">
-                  <span className="text-3xl">✓</span>
-                  <span>Correct! Great job 🔥</span>
-                </div>
-              ) : (
-                <div className="text-red-600 flex flex-col items-center gap-2">
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl">✗</span>
-                    <span>Oops... Wrong answer</span>
-                  </div>
-                  <div className="text-gray-700 mt-2">
-                    Correct answer:{' '}
-                    <span className="font-bold">
-                      {currentQuestion.correctAnswer}
-                    </span>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Navigation */}
-        <div className="mt-10 flex justify-between w-full max-w-3xl">
-          <button
-            onClick={handlePrevious}
-            disabled={currentIndex === 0}
-            className="px-8 py-3 bg-gray-300 text-gray-700 rounded-lg font-medium disabled:opacity-50"
-          >
-            ← Previous
-          </button>
-
-          <button
-            onClick={handleNext}
-            className="px-10 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 active:bg-purple-800"
-          >
-            {isLastQuestion ? 'Finish Quiz' : 'Next →'}
-          </button>
-        </div>
-
-        {/* Current score (optional) */}
-        <div className="mt-6 text-gray-600">
-          Score: {score} / {currentIndex + 1} answered
         </div>
       </main>
     </div>
   );
-};
-
-export default QuizPage;
+}

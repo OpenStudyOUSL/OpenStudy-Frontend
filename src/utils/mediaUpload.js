@@ -1,8 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 
-const url = "https://wioeainqjclccjyoqhwh.supabase.co";
+const url = "https://nqxgtzkwhgxzovljugyp.supabase.co";
 
-const key =`eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indpb2VhaW5xamNsY2NqeW9xaHdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg2NjY1MjMsImV4cCI6MjA4NDI0MjUyM30.yRMFhEUtUje01l5rcAzREzt-ndYtQNm63KtrXtky3RM`;
+const key =`eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xeGd0emt3aGd4em92bGp1Z3lwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkwMDk4OTUsImV4cCI6MjA4NDU4NTg5NX0.ZoXFwSz5m_iVzzKw2tQDYa633m7GcIoNQCN0fKx2-xU`;
 
 
 export default function UploadMediaUploadtoSupabase(file){

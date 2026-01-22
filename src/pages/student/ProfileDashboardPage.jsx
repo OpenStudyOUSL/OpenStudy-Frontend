@@ -29,8 +29,6 @@ const ProfileDashboard = () => {
         );
         
         setUser(res.data);
-        console.log(res.data);
-
       } catch (err) {
         console.error(err);
         toast.error("Failed to load profile. Please login again.");
@@ -43,6 +41,17 @@ const ProfileDashboard = () => {
 
     fetchUser();
   }, [navigate]);
+
+  // ────────────────────────────────────────────────
+  // Logout handler
+  // ────────────────────────────────────────────────
+  const handleLogout = () => {
+    toast.success("Logged out successfully");
+    localStorage.removeItem("token");
+    // Optional: clear any other stored user data
+    // localStorage.removeItem("user");
+    navigate("/login");
+  };
 
   if (loading) {
     return (
@@ -60,10 +69,9 @@ const ProfileDashboard = () => {
     );
   }
 
-  // You can adjust fallback values if some fields might be missing
   const userName = user.userName || "Not set";
-  const regNo    = user.registerNumber    || "Not set";
-  const email    = user.email    || "Not available";
+  const regNo    = user.registerNumber || "Not set";
+  const email    = user.email || "Not available";
   const profilePic = user.profilePicture || "https://i.pravatar.cc/150";
 
   return (
@@ -72,11 +80,25 @@ const ProfileDashboard = () => {
 
         {/* ================= PROFILE CARD ================= */}
         <div className="bg-linear-to-r from-[#8B5CF6] to-[#A78BFA] rounded-2xl p-6 text-white shadow-lg">
-          <div className="flex justify-between items-start">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <h2 className="text-2xl font-semibold">Profile</h2>
-            <Link to="/profile/edit" className="bg-[#7C3AED] px-4 py-1 rounded-lg text-sm shadow">
-              Edit Profile
-            </Link>
+
+            <div className="flex items-center gap-3">
+              <Link
+                to="/profile/edit"
+                className="bg-[#7C3AED] px-5 py-2 rounded-lg text-sm font-medium shadow hover:bg-[#6D28D9] transition"
+              >
+                Edit Profile
+              </Link>
+
+              {/* Logout Button */}
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 hover:bg-red-600 px-5 py-2 rounded-lg text-sm font-medium shadow transition text-white"
+              >
+                Logout
+              </button>
+            </div>
           </div>
 
           <div className="flex flex-col md:flex-row items-center md:items-start gap-6 mt-6">
@@ -142,10 +164,6 @@ const ProfileDashboard = () => {
           </h2>
 
           <div className="space-y-4">
-            {/* 
-              Later you can replace this static array 
-              with real data from backend (user.subjectsPerformance or similar)
-            */}
             {[60, 98, 50, 25].map((value, index) => (
               <div
                 key={index}
