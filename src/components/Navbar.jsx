@@ -82,7 +82,7 @@ const Navbar = () => {
               // Logged-in: show profile icon with tooltip
               <Link to="/profile" className="relative group">
                 <img
-                  src="../../public/profile.jpg" // ← replace with dynamic user.profilePicture if available
+                  src="/profile.jpg" // ← replace with dynamic user.profilePicture if available
                   alt="Profile"
                   className="
                     w-10 h-10 rounded-full object-cover
