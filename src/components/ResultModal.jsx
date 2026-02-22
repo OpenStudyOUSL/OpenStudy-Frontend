@@ -2,9 +2,9 @@ import React, { useEffect } from "react";
 import axios from "axios";
 
 const ResultModal = ({ isOpen, score, total, quizId, onRestart, onClose }) => {
-  if (!isOpen) return null;
-
   const percentage = Math.round((score / total) * 100);
+
+  const attemptSaved = React.useRef(false);
 
   // 🔹 Save result when modal opens
   useEffect(() => {
@@ -28,8 +28,20 @@ const ResultModal = ({ isOpen, score, total, quizId, onRestart, onClose }) => {
       }
     };
 
-    saveResult();
-  }, [quizId, score, total]);
+    if (isOpen && !attemptSaved.current) {
+      saveResult();
+      attemptSaved.current = true;
+    }
+  }, [isOpen, quizId, score, total]);
+
+  // Reset attempt flag when modal is closed
+  useEffect(() => {
+    if (!isOpen) {
+      attemptSaved.current = false;
+    }
+  }, [isOpen]);
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
