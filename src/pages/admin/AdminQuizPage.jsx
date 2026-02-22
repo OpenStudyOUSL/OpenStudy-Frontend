@@ -1,26 +1,29 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const API = "http://localhost:3000/api/courses";
+const COURSES_API = "http://localhost:3000/api/courses";
+const QUIZZES_API = "http://localhost:3000/api/quizzes";
 
 const EMPTY_FORM = {
   courseId: "",
-  courseName: "",
-  courseDescription: "",
-  courseTutor: "",
-  courseImage: "",
+  topic: "",
+  quizId: "",
+  question: "",
+  options: ["", "", "", ""],
+  correctAnswer: "",
+  questionType: "MCQ",
 };
 
-export default function AdminCoursePage() {
+export default function AdminQuizPage() {
   const navigate = useNavigate();
 
+  const [quizzes, setQuizzes] = useState([]);
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   // Modal state
   const [showModal, setShowModal] = useState(false);
-  const [editingCourse, setEditingCourse] = useState(null); // null = create mode
   const [form, setForm] = useState(EMPTY_FORM);
   const [formError, setFormError] = useState("");
   const [saving, setSaving] = useState(false);
@@ -30,14 +33,23 @@ export default function AdminCoursePage() {
   const [deleting, setDeleting] = useState(false);
 
   // ── Data Fetch ──────────────────────────────────────────────
-  const fetchCourses = async () => {
+  const fetchData = async () => {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(API);
-      if (!res.ok) throw new Error("Failed to fetch courses");
-      const data = await res.json();
-      setCourses(data);
+      const [coursesRes, quizzesRes] = await Promise.all([
+        fetch(COURSES_API),
+        fetch(QUIZZES_API),
+      ]);
+
+      if (!coursesRes.ok) throw new Error("Failed to fetch courses");
+      if (!quizzesRes.ok) throw new Error("Failed to fetch quizzes");
+
+      const coursesData = await coursesRes.json();
+      const quizzesData = await quizzesRes.json();
+
+      setCourses(coursesData);
+      setQuizzes(quizzesData);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -46,33 +58,18 @@ export default function AdminCoursePage() {
   };
 
   useEffect(() => {
-    fetchCourses();
+    fetchData();
   }, []);
 
   // ── Modal Helpers ───────────────────────────────────────────
   const openCreate = () => {
-    setEditingCourse(null);
     setForm(EMPTY_FORM);
-    setFormError("");
-    setShowModal(true);
-  };
-
-  const openEdit = (course) => {
-    setEditingCourse(course);
-    setForm({
-      courseId: course.courseId,
-      courseName: course.courseName,
-      courseDescription: course.courseDescription,
-      courseTutor: course.courseTutor,
-      courseImage: course.courseImage || "",
-    });
     setFormError("");
     setShowModal(true);
   };
 
   const closeModal = () => {
     setShowModal(false);
-    setEditingCourse(null);
     setForm(EMPTY_FORM);
     setFormError("");
   };
@@ -80,37 +77,90 @@ export default function AdminCoursePage() {
   const handleFormChange = (e) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
-  // ── Save (Create / Update) ──────────────────────────────────
+  const handleOptionChange = (index, value) => {
+    const newOptions = [...form.options];
+    newOptions[index] = value;
+    setForm((prev) => ({ ...prev, options: newOptions }));
+  };
+
+  const addOption = () => {
+    setForm((prev) => ({ ...prev, options: [...prev.options, ""] }));
+  };
+
+  const removeOption = (index) => {
+    setForm((prev) => ({
+      ...prev,
+      options: prev.options.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleQuestionTypeChange = (e) => {
+    const type = e.target.value;
+    if (type === "TRUE_FALSE") {
+      setForm((prev) => ({
+        ...prev,
+        questionType: type,
+        options: ["True", "False"],
+        correctAnswer: "True",
+      }));
+    } else {
+      setForm((prev) => ({
+        ...prev,
+        questionType: type,
+        options: ["", "", "", ""],
+        correctAnswer: "",
+      }));
+    }
+  };
+
+  // ── Save (Create) ───────────────────────────────────────────
   const handleSave = async () => {
-    const { courseId, courseName, courseDescription, courseTutor } = form;
-    if (!courseId || !courseName || !courseDescription || !courseTutor) {
+    const {
+      courseId,
+      topic,
+      quizId,
+      question,
+      options,
+      correctAnswer,
+      questionType,
+    } = form;
+
+    // Basic validation
+    if (!courseId || !topic || !quizId || !question || !correctAnswer) {
       setFormError("Please fill in all required fields.");
       return;
     }
 
+    const filteredOptions = options.filter((opt) => opt.trim() !== "");
+    if (filteredOptions.length < 2) {
+      setFormError("At least two options are required.");
+      return;
+    }
+
+    if (!filteredOptions.includes(correctAnswer)) {
+      setFormError("Correct answer must be one of the options.");
+      return;
+    }
+
+    const payload = {
+      ...form,
+      quizId: Number(quizId),
+      options: filteredOptions,
+    };
+
     setSaving(true);
     setFormError("");
     try {
-      let res;
-      if (editingCourse) {
-        // Update
-        res = await fetch(`${API}/${editingCourse._id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(form),
-        });
-      } else {
-        // Create
-        res = await fetch(API, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(form),
-        });
-      }
+      const res = await fetch(QUIZZES_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Save failed");
       closeModal();
-      fetchCourses();
+      fetchData();
     } catch (err) {
       setFormError(err.message);
     } finally {
@@ -119,14 +169,14 @@ export default function AdminCoursePage() {
   };
 
   // ── Delete ──────────────────────────────────────────────────
-  const confirmDelete = (course) => setDeleteTarget(course);
+  const confirmDelete = (quiz) => setDeleteTarget(quiz);
   const cancelDelete = () => setDeleteTarget(null);
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
     setDeleting(true);
     try {
-      const res = await fetch(`${API}/${deleteTarget._id}`, {
+      const res = await fetch(`${QUIZZES_API}/${deleteTarget._id}`, {
         method: "DELETE",
       });
       if (!res.ok) {
@@ -134,12 +184,21 @@ export default function AdminCoursePage() {
         throw new Error(data.message || "Delete failed");
       }
       setDeleteTarget(null);
-      fetchCourses();
+      fetchData();
     } catch (err) {
       alert(err.message);
     } finally {
       setDeleting(false);
     }
+  };
+
+  // ── Get Course Name helper ──────────────────────────────────
+  const getCourseName = (cId) => {
+    if (typeof cId === "object" && cId !== null && cId.courseName) {
+      return cId.courseName;
+    }
+    const course = courses.find((c) => c.courseId === cId || c._id === cId);
+    return course ? course.courseName : cId;
   };
 
   // ── Sidebar nav item style ──────────────────────────────────
@@ -183,10 +242,10 @@ export default function AdminCoursePage() {
           <Link to="/admin/students">
             <div className={navItemClass}>Students</div>
           </Link>
-          <div className={activeNavItemClass}>Courses</div>
-          <Link to="/admin/quizzes">
-            <div className={navItemClass}>Quizzes</div>
+          <Link to="/admin/courses">
+            <div className={navItemClass}>Courses</div>
           </Link>
+          <div className={activeNavItemClass}>Quizzes</div>
           <div className={navItemClass}>Reports</div>
 
           <div
@@ -207,10 +266,10 @@ export default function AdminCoursePage() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight">
-              Course Management
+              Quiz Management
             </h1>
             <p className="text-gray-500 mt-1">
-              Manage all courses — create, edit, or remove.
+              Manage quizzes — create and remove questions.
             </p>
           </div>
           <button
@@ -218,19 +277,19 @@ export default function AdminCoursePage() {
             className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
           >
             <span className="text-xl leading-none">+</span>
-            Add Course
+            Add Quiz Question
           </button>
         </div>
 
         {/* Stats Card */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
           <div className="bg-white rounded-2xl shadow-md p-6 border border-blue-100 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white text-2xl font-bold shadow">
-              {courses.length}
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-400 to-rose-500 flex items-center justify-center text-white text-2xl font-bold shadow">
+              {quizzes.length}
             </div>
             <div>
-              <p className="text-gray-500 text-sm">Total Courses</p>
-              <p className="text-gray-800 font-bold text-lg">Courses</p>
+              <p className="text-gray-500 text-sm">Total Questions</p>
+              <p className="text-gray-800 font-bold text-lg">Quizzes</p>
             </div>
           </div>
         </div>
@@ -247,46 +306,33 @@ export default function AdminCoursePage() {
           <div className="flex items-center justify-center h-64">
             <div className="w-12 h-12 rounded-full border-4 border-blue-200 border-t-blue-500 animate-spin" />
           </div>
-        ) : courses.length === 0 ? (
+        ) : quizzes.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-64 text-gray-400">
-            <svg
-              className="w-16 h-16 mb-4 opacity-40"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-              />
-            </svg>
-            <p className="text-lg font-medium">No courses found</p>
+            <p className="text-lg font-medium">No quiz questions found</p>
             <p className="text-sm mt-1">
-              Click "Add Course" to create the first one.
+              Click "Add Quiz Question" to create the first one.
             </p>
           </div>
         ) : (
-          /* Course Table */
+          /* Quizzes Table */
           <div className="bg-white rounded-2xl shadow-md border border-blue-50 overflow-hidden">
             <table className="w-full text-left">
               <thead>
                 <tr className="bg-gradient-to-r from-cyan-50 to-blue-50 border-b border-blue-100">
                   <th className="px-6 py-4 text-xs font-semibold text-blue-600 uppercase tracking-wider">
-                    Image
+                    Q ID
                   </th>
                   <th className="px-6 py-4 text-xs font-semibold text-blue-600 uppercase tracking-wider">
-                    Course ID
+                    Course
                   </th>
                   <th className="px-6 py-4 text-xs font-semibold text-blue-600 uppercase tracking-wider">
-                    Name
+                    Topic
                   </th>
                   <th className="px-6 py-4 text-xs font-semibold text-blue-600 uppercase tracking-wider">
-                    Tutor
+                    Question
                   </th>
                   <th className="px-6 py-4 text-xs font-semibold text-blue-600 uppercase tracking-wider">
-                    Description
+                    Type
                   </th>
                   <th className="px-6 py-4 text-xs font-semibold text-blue-600 uppercase tracking-wider text-center">
                     Actions
@@ -294,47 +340,41 @@ export default function AdminCoursePage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {courses.map((course) => (
+                {quizzes.map((quiz) => (
                   <tr
-                    key={course._id}
+                    key={quiz._id}
                     className="hover:bg-blue-50/40 transition-colors duration-150"
                   >
                     <td className="px-6 py-4">
-                      <img
-                        src={course.courseImage || "/course-placeholder.png"}
-                        alt={course.courseName}
-                        onError={(e) => {
-                          e.target.src = "https://placehold.co/48x48?text=📚";
-                        }}
-                        className="w-12 h-12 rounded-lg object-cover border border-blue-100 shadow-sm"
-                      />
-                    </td>
-                    <td className="px-6 py-4">
                       <span className="inline-block px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-xs font-mono font-semibold">
-                        {course.courseId}
+                        {quiz.quizId}
                       </span>
                     </td>
-                    <td className="px-6 py-4 font-semibold text-gray-800">
-                      {course.courseName}
+                    <td
+                      className="px-6 py-4 text-sm font-semibold text-gray-800 max-w-[150px] truncate"
+                      title={getCourseName(quiz.courseId)}
+                    >
+                      {getCourseName(quiz.courseId)}
                     </td>
-                    <td className="px-6 py-4 text-gray-600">
-                      {course.courseTutor}
+                    <td className="px-6 py-4 text-gray-600 text-sm">
+                      {quiz.topic}
                     </td>
-                    <td className="px-6 py-4 text-gray-500 text-sm max-w-xs">
-                      <span className="line-clamp-2">
-                        {course.courseDescription}
+                    <td className="px-6 py-4 text-gray-800 text-sm max-w-[250px]">
+                      <span className="line-clamp-2" title={quiz.question}>
+                        {quiz.question}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-xs font-semibold ${quiz.questionType === "MCQ" ? "bg-indigo-100 text-indigo-700" : "bg-emerald-100 text-emerald-700"}`}
+                      >
+                        {quiz.questionType === "TRUE_FALSE" ? "T/F" : "MCQ"}
                       </span>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center gap-2">
                         <button
-                          onClick={() => openEdit(course)}
-                          className="px-4 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => confirmDelete(course)}
+                          onClick={() => confirmDelete(quiz)}
                           className="px-4 py-1.5 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors"
                         >
                           Delete
@@ -349,90 +389,183 @@ export default function AdminCoursePage() {
         )}
       </div>
 
-      {/* ===== Create / Edit Modal ===== */}
+      {/* ===== Create Modal ===== */}
       {showModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-8 animate-fade-in">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-8 animate-fade-in max-h-[90vh] overflow-y-auto">
             <h2 className="text-2xl font-bold text-gray-800 mb-1">
-              {editingCourse ? "Edit Course" : "Add New Course"}
+              Add New Quiz Question
             </h2>
             <p className="text-gray-400 text-sm mb-6">
-              {editingCourse
-                ? "Update the details of this course."
-                : "Fill in the details to create a new course."}
+              Fill in the details to create a new quiz question.
             </p>
 
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Course ID <span className="text-red-500">*</span>
+                  Course <span className="text-red-500">*</span>
                 </label>
-                <input
+                <select
                   name="courseId"
                   value={form.courseId}
                   onChange={handleFormChange}
-                  disabled={!!editingCourse}
-                  placeholder="e.g. CS101"
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 disabled:bg-gray-50 disabled:text-gray-400 transition"
-                />
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 transition bg-white"
+                >
+                  <option value="" disabled>
+                    Select a course
+                  </option>
+                  {courses.map((c) => (
+                    <option key={c._id} value={c.courseId}>
+                      {c.courseName}
+                    </option>
+                  ))}
+                </select>
               </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Course Name <span className="text-red-500">*</span>
+                  Topic <span className="text-red-500">*</span>
                 </label>
                 <input
-                  name="courseName"
-                  value={form.courseName}
+                  name="topic"
+                  value={form.topic}
                   onChange={handleFormChange}
-                  placeholder="e.g. Introduction to Computer Science"
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 transition"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Tutor <span className="text-red-500">*</span>
-                </label>
-                <input
-                  name="courseTutor"
-                  value={form.courseTutor}
-                  onChange={handleFormChange}
-                  placeholder="e.g. Dr. John Smith"
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 transition"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Description <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  name="courseDescription"
-                  value={form.courseDescription}
-                  onChange={handleFormChange}
-                  rows={3}
-                  placeholder="Brief description of the course content…"
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 transition resize-none"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Image URL{" "}
-                  <span className="text-gray-400 font-normal">(optional)</span>
-                </label>
-                <input
-                  name="courseImage"
-                  value={form.courseImage}
-                  onChange={handleFormChange}
-                  placeholder="https://..."
+                  placeholder="e.g. basics, advanced"
                   className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 transition"
                 />
               </div>
 
-              {formError && (
-                <p className="text-red-500 text-sm bg-red-50 border border-red-200 rounded-lg px-4 py-2">
-                  {formError}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Question ID (Number) <span className="text-red-500">*</span>
+                </label>
+                <input
+                  name="quizId"
+                  type="number"
+                  value={form.quizId}
+                  onChange={handleFormChange}
+                  placeholder="e.g. 1"
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Question Type <span className="text-red-500">*</span>
+                </label>
+                <select
+                  name="questionType"
+                  value={form.questionType}
+                  onChange={handleQuestionTypeChange}
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 transition bg-white"
+                >
+                  <option value="MCQ">Multiple Choice (MCQ)</option>
+                  <option value="TRUE_FALSE">True / False</option>
+                </select>
+              </div>
+
+              <div className="col-span-1 md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Question <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  name="question"
+                  value={form.question}
+                  onChange={handleFormChange}
+                  rows={2}
+                  placeholder="Enter the question text..."
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 transition resize-none"
+                />
+              </div>
+
+              {/* Options */}
+              <div className="col-span-1 md:col-span-2">
+                <label className="flex items-center justify-between text-sm font-medium text-gray-700 mb-2">
+                  <span>
+                    Options <span className="text-red-500">*</span>
+                  </span>
+                  {form.questionType === "MCQ" && (
+                    <button
+                      type="button"
+                      onClick={addOption}
+                      className="text-blue-500 text-xs hover:underline"
+                    >
+                      + Add Option
+                    </button>
+                  )}
+                </label>
+                <div className="space-y-2">
+                  {form.options.map((opt, index) => (
+                    <div key={index} className="flex gap-2">
+                      <input
+                        value={opt}
+                        onChange={(e) =>
+                          handleOptionChange(index, e.target.value)
+                        }
+                        disabled={form.questionType === "TRUE_FALSE"}
+                        placeholder={`Option ${index + 1}`}
+                        className={`flex-1 px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 transition ${form.questionType === "TRUE_FALSE" ? "bg-gray-50 text-gray-500" : ""}`}
+                      />
+                      {form.questionType === "MCQ" &&
+                        form.options.length > 2 && (
+                          <button
+                            type="button"
+                            onClick={() => removeOption(index)}
+                            className="px-3 text-red-500 hover:bg-red-50 rounded-xl transition"
+                          >
+                            ✕
+                          </button>
+                        )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="col-span-1 md:col-span-2 mt-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Correct Answer <span className="text-red-500">*</span>
+                </label>
+                {form.questionType === "TRUE_FALSE" ? (
+                  <select
+                    name="correctAnswer"
+                    value={form.correctAnswer}
+                    onChange={handleFormChange}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 transition bg-white"
+                  >
+                    <option value="True">True</option>
+                    <option value="False">False</option>
+                  </select>
+                ) : (
+                  <select
+                    name="correctAnswer"
+                    value={form.correctAnswer}
+                    onChange={handleFormChange}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 transition bg-white"
+                  >
+                    <option value="" disabled>
+                      Select correct answer
+                    </option>
+                    {form.options.map(
+                      (opt, i) =>
+                        opt.trim() !== "" && (
+                          <option key={i} value={opt}>
+                            {opt}
+                          </option>
+                        ),
+                    )}
+                  </select>
+                )}
+                <p className="text-xs text-gray-400 mt-1">
+                  Select from the options defined above.
                 </p>
-              )}
+              </div>
             </div>
+
+            {formError && (
+              <p className="mt-4 text-red-500 text-sm bg-red-50 border border-red-200 rounded-lg px-4 py-2">
+                {formError}
+              </p>
+            )}
 
             <div className="flex gap-3 mt-7">
               <button
@@ -446,11 +579,7 @@ export default function AdminCoursePage() {
                 disabled={saving}
                 className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold hover:opacity-90 transition disabled:opacity-60"
               >
-                {saving
-                  ? "Saving…"
-                  : editingCourse
-                    ? "Update Course"
-                    : "Create Course"}
+                {saving ? "Creating…" : "Create Question"}
               </button>
             </div>
           </div>
@@ -477,14 +606,14 @@ export default function AdminCoursePage() {
               </svg>
             </div>
             <h3 className="text-xl font-bold text-gray-800 mb-2">
-              Delete Course?
+              Delete Question?
             </h3>
             <p className="text-gray-500 text-sm mb-6">
-              Are you sure you want to delete{" "}
+              Are you sure you want to delete this quiz question (ID:{" "}
               <span className="font-semibold text-gray-700">
-                "{deleteTarget.courseName}"
+                {deleteTarget.quizId}
               </span>
-              ? This action cannot be undone.
+              )? This action cannot be undone.
             </p>
             <div className="flex gap-3">
               <button

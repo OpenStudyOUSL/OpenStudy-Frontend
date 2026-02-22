@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useState, useEffect } from "react";
 
 /* Rank badge (red theme + transitions) */
 function RankBadge({ rank }) {
@@ -58,20 +58,25 @@ function TopCard({ place, user, big }) {
         "
       >
         <img
-          src={user.avatar}
-          alt={user.name}
+          src={
+            user.profilePicture ||
+            "https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg"
+          }
+          alt={user.userName}
           className="h-full w-full object-cover"
         />
       </div>
 
       <div className="relative mt-4 text-center">
-        <div className="text-sm font-extrabold text-gray-900">{user.name}</div>
-        <div className="text-xs text-gray-600">{user.studentId}</div>
+        <div className="text-sm font-extrabold text-gray-900">
+          {user.userName}
+        </div>
+        <div className="text-xs text-gray-600">ID: {user._id?.slice(-5)}</div>
 
         <div className="mt-3 text-xs font-semibold text-gray-900">
           Score:{" "}
           <span className="font-extrabold text-red-800">
-            {user.score.toLocaleString()}
+            {user.totalScore?.toLocaleString() || 0}
           </span>
         </div>
 
@@ -83,45 +88,25 @@ function TopCard({ place, user, big }) {
 }
 
 function LeaderboardPage() {
-  const leaderboard = useMemo(
-    () => [
-      {
-        rank: 1,
-        name: "A. Silva",
-        studentId: "123456789",
-        score: 1890,
-        quizzes: 51,
-        avatar:
-          "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&auto=format&fit=crop",
-      },
-      {
-        rank: 2,
-        name: "A. Silva",
-        studentId: "123456789",
-        score: 1820,
-        quizzes: 48,
-        avatar:
-          "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&auto=format&fit=crop",
-      },
-      {
-        rank: 3,
-        name: "A. Silva",
-        studentId: "123456789",
-        score: 1780,
-        quizzes: 45,
-        avatar:
-          "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop",
-      },
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-      ...Array.from({ length: 12 }).map((_, i) => ({
-        rank: 4 + i,
-        name: "A. Silva",
-        score: 1750,
-        quizzes: 51,
-      })),
-    ],
-    []
-  );
+  useEffect(() => {
+    fetch("http://localhost:3000/api/leaderboard")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch leaderboard");
+        return res.json();
+      })
+      .then((data) => {
+        setLeaderboard(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
 
   const top3 = leaderboard.slice(0, 3);
   const rows = leaderboard.slice(3);
@@ -156,51 +141,80 @@ function LeaderboardPage() {
         </div>
 
         {/* Top 3 */}
-        <div className="mt-8 flex flex-col items-center justify-center gap-6 md:flex-row md:gap-10">
-          <TopCard place={2} user={top3[1]} />
-          <TopCard place={1} user={top3[0]} big />
-          <TopCard place={3} user={top3[2]} />
-        </div>
+        {loading ? (
+          <div className="mt-8 flex justify-center text-red-800 font-semibold animate-pulse">
+            Loading Leaderboard...
+          </div>
+        ) : error ? (
+          <div className="mt-8 flex justify-center text-red-600 font-semibold">
+            Error: {error}
+          </div>
+        ) : leaderboard.length === 0 ? (
+          <div className="mt-16 flex flex-col items-center justify-center text-gray-400">
+            <p className="text-xl font-bold">No Students Yet!</p>
+            <p className="text-sm">
+              They need to complete quizzes to appear here.
+            </p>
+          </div>
+        ) : (
+          <div className="mt-8 flex flex-col items-center justify-center gap-6 md:flex-row md:gap-10">
+            {top3[1] && <TopCard place={2} user={top3[1]} />}
+            {top3[0] && <TopCard place={1} user={top3[0]} big />}
+            {top3[2] && <TopCard place={3} user={top3[2]} />}
+          </div>
+        )}
 
         {/* Table (glass) */}
-        <div className="mt-10 overflow-hidden rounded-2xl border border-red-200/60 bg-white/70 backdrop-blur shadow-xl shadow-red-900/10">
-          {/* header */}
-          <div className="grid grid-cols-12 gap-2 bg-white/60 px-4 py-3 text-xs font-extrabold text-gray-700">
-            <div className="col-span-2">Rank</div>
-            <div className="col-span-6">Name</div>
-            <div className="col-span-2 text-right">Score</div>
-            <div className="col-span-2 text-right">Quizzes</div>
-          </div>
+        {!loading && !error && leaderboard.length > 3 && (
+          <div className="mt-10 overflow-hidden rounded-2xl border border-red-200/60 bg-white/70 backdrop-blur shadow-xl shadow-red-900/10">
+            {/* header */}
+            <div className="grid grid-cols-12 gap-2 bg-white/60 px-4 py-3 text-xs font-extrabold text-gray-700">
+              <div className="col-span-2">Rank</div>
+              <div className="col-span-6">Name</div>
+              <div className="col-span-2 text-right">Score</div>
+              <div className="col-span-2 text-right">Quizzes</div>
+            </div>
 
-          {/* rows */}
-          <div className="divide-y divide-red-200/60">
-            {rows.map((r) => (
-              <div
-                key={r.rank}
-                className="
+            {/* rows */}
+            <div className="divide-y divide-red-200/60">
+              {rows.map((r) => (
+                <div
+                  key={r.rank}
+                  className="
                   group grid grid-cols-12 items-center gap-2 px-4 py-3
                   text-sm text-gray-800
                   transition-all duration-300
                   hover:bg-white/60
                 "
-              >
-                <div className="col-span-2">
-                  <RankBadge rank={r.rank} />
-                </div>
+                >
+                  <div className="col-span-2">
+                    <RankBadge rank={r.rank} />
+                  </div>
 
-                <div className="col-span-6 font-semibold">{r.name}</div>
+                  <div className="col-span-6 font-semibold flex items-center gap-3">
+                    <img
+                      src={
+                        r.profilePicture ||
+                        "https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg"
+                      }
+                      alt={r.userName}
+                      className="w-6 h-6 rounded-full object-cover shadow-sm"
+                    />
+                    {r.userName}
+                  </div>
 
-                <div className="col-span-2 text-right font-semibold text-gray-900">
-                  {r.score.toLocaleString()}
-                </div>
+                  <div className="col-span-2 text-right font-semibold text-gray-900">
+                    {r.totalScore?.toLocaleString() || 0}
+                  </div>
 
-                <div className="col-span-2 text-right text-gray-700">
-                  {r.quizzes}
+                  <div className="col-span-2 text-right text-gray-700">
+                    {r.quizzesTaken || 0}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* bottom divider */}
         <div className="mt-10 h-px w-full bg-linear-to-r from-transparent via-red-200/80 to-transparent" />
