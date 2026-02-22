@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes, Outlet } from "react-router-dom";
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from "react-hot-toast";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import HomePage from "./pages/student/HomePage";
@@ -8,6 +8,9 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import AboutUs from "./pages/student/AboutusPage";
 import AdminDashboard from "./pages/admin/AdminDashbord";
+import AdminCoursePage from "./pages/admin/AdminCoursePage";
+import AdminStudentPage from "./pages/admin/AdminStudentPage";
+import AdminQuizPage from "./pages/admin/AdminQuizPage";
 import ProfileDashboard from "./pages/student/ProfileDashboardPage";
 import ContactusPage from "./pages/ContactusPage";
 import EditProfilePage from "./pages/student/EditProfilePage";
@@ -15,20 +18,18 @@ import CoursePage from "./pages/student/CoursesPage";
 import LeaderboardPage from "./pages/student/LeaderBoradPage";
 import CourseInfoPage from "./pages/student/CourseInfoPage";
 import QuizPage from "./pages/student/QuizPage";
-import HelpPage from "./pages/student/HelpPage";//paruma
-
+import HelpPage from "./pages/student/HelpPage";
 
 function FirstLayout() {
-  return <Outlet />;      // ← just renders the admin pages
+  return <Outlet />; // ← just renders the admin pages
 }
-
 
 // Layout for normal/student pages (with navbar + footer)
 function StudentLayout() {
   return (
     <>
       <Navbar />
-      <Outlet />           {/* ← pages will render here */}
+      <Outlet /> {/* ← pages will render here */}
       <Footer />
     </>
   );
@@ -36,15 +37,14 @@ function StudentLayout() {
 
 // Layout for admin (no navbar, no footer — clean dashboard)
 function AdminLayout() {
-  return <Outlet />;      // ← just renders the admin pages
+  return <Outlet />; // ← just renders the admin pages
 }
 
 function App() {
   return (
     <BrowserRouter>
-    <Toaster position="top-right" reverseOrder={false} />
+      <Toaster position="top-right" reverseOrder={false} />
       <Routes>
-
         {/* First page (no navbar, no footer) */}
         <Route element={<FirstLayout />}>
           <Route path="/login" element={<LoginPage />} />
@@ -57,29 +57,24 @@ function App() {
           <Route path="/about" element={<AboutUs />} />
           <Route path="/profile" element={<ProfileDashboard />} />
           <Route path="/profile/edit" element={<EditProfilePage />} />
-          <Route path='/contact' element={<ContactusPage />} />
+          <Route path="/contact" element={<ContactusPage />} />
           <Route path="/Leaderboard" element={<LeaderboardPage />} />
           <Route path="/Course" element={<CoursePage />} />
           <Route path="/courseinfo/:courseId" element={<CourseInfoPage />} />
           <Route path="/courseinfo/:courseId/:topic" element={<QuizPage />} />
           <Route path="/help" element={<HelpPage />} />
-          
-
         </Route>
 
         {/* Admin area — NO Navbar/Footer */}
         <Route path="/admin/*" element={<AdminLayout />}>
           <Route path="dashboard" element={<AdminDashboard />} />
-          {/* 
-            You can add more admin sub-routes later like this:
-            <Route path="users" element={<AdminUsers />} />
-            <Route path="settings" element={<AdminSettings />} />
-          */}
+          <Route path="students" element={<AdminStudentPage />} />
+          <Route path="courses" element={<AdminCoursePage />} />
+          <Route path="quizzes" element={<AdminQuizPage />} />
         </Route>
 
         {/* 404 - Not Found (you can also wrap it in StudentLayout if you want) */}
         <Route path="*" element={<NotFound />} />
-
       </Routes>
     </BrowserRouter>
   );

@@ -1,14 +1,7 @@
 import React, { useEffect } from "react";
 import axios from "axios";
 
-const ResultModal = ({
-  isOpen,
-  score,
-  total,
-  quizId,
-  onRestart,
-  onClose,
-}) => {
+const ResultModal = ({ isOpen, score, total, quizId, onRestart, onClose }) => {
   if (!isOpen) return null;
 
   const percentage = Math.round((score / total) * 100);
@@ -17,17 +10,21 @@ const ResultModal = ({
   useEffect(() => {
     const saveResult = async () => {
       try {
+        const token = localStorage.getItem("token");
         await axios.post(
-          `${import.meta.env.VITE_BACKEND_URL}/api/results`,
+          `${import.meta.env.VITE_BACKEND_URL}/api/leaderboard/update`,
           {
-            userId: null, // replace later with logged-in user
-            quizId,
             score,
             totalQuestions: total,
-          }
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Assuming backend index.js looks for Bearer token
+            },
+          },
         );
       } catch (err) {
-        console.error("Failed to save result", err);
+        console.error("Failed to update leaderboard", err);
       }
     };
 
