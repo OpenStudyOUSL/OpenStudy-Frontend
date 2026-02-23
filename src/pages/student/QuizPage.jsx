@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import QuizCard from "../../components/quizCard";
 import ResultModal from "../../components/ResultModal";
 
 export default function QuizPage() {
   const { courseId, topic } = useParams();
+  const navigate = useNavigate();
 
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -27,7 +28,7 @@ export default function QuizPage() {
 
         const encodedTopic = encodeURIComponent(topic);
         const res = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/quizzes/course/${courseId}/topic/${encodedTopic}`
+          `${import.meta.env.VITE_BACKEND_URL}/api/quizzes/course/${courseId}/topic/${encodedTopic}`,
         );
 
         if (!Array.isArray(res.data) || res.data.length === 0) {
@@ -110,8 +111,8 @@ export default function QuizPage() {
               idx === currentIndex
                 ? "bg-black"
                 : idx < currentIndex
-                ? "bg-green-500"
-                : "bg-gray-300"
+                  ? "bg-green-500"
+                  : "bg-gray-300"
             }`}
           />
         ))}
@@ -161,7 +162,10 @@ export default function QuizPage() {
           setScore(0);
           resetState();
         }}
-        onClose={() => setShowResult(false)}
+        onClose={() => {
+          setShowResult(false);
+          navigate("/"); // Navigate back to safety
+        }}
       />
     </div>
   );

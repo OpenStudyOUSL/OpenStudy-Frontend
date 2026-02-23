@@ -1,19 +1,39 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { Menu, X } from "lucide-react";
 
 const Navbar = () => {
   const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
 
   // Check login status on mount + whenever it might change
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const userStr = localStorage.getItem("user");
+
     setIsLoggedIn(!!token); // !! converts to boolean
+    if (userStr) {
+      try {
+        setUser(JSON.parse(userStr));
+      } catch (error) {
+        console.error("Failed to parse user data from localStorage");
+      }
+    }
 
     // Optional: listen for storage changes (if logout happens in another tab)
     const handleStorageChange = () => {
       const token = localStorage.getItem("token");
+      const userStr = localStorage.getItem("user");
       setIsLoggedIn(!!token);
+      if (userStr) {
+        try {
+          setUser(JSON.parse(userStr));
+        } catch (error) {}
+      } else {
+        setUser(null);
+      }
     };
 
     window.addEventListener("storage", handleStorageChange);
@@ -80,36 +100,108 @@ const Navbar = () => {
           <div className="flex items-center gap-4 md:gap-6">
             {isLoggedIn ? (
               // Logged-in: show profile icon with tooltip
-              <Link to="/profile" className="relative group">
-                <img
-                  src="/profile.jpg" // ← replace with dynamic user.profilePicture if available
-                  alt="Profile"
-                  className="
+              <div className="flex items-center gap-3">
+                {/* Desktop User Name */}
+                {user && (
+                  <span className="hidden md:block font-bold text-gray-800">
+                    {user.userName}
+                  </span>
+                )}
+                <Link to="/profile" className="relative group">
+                  <img
+                    src="/profile.jpg" // ← replace with dynamic user.profilePicture if available
+                    alt="Profile"
+                    className="
                     w-10 h-10 rounded-full object-cover
                     border-2 border-red-300
                     shadow-md
                     transition-transform duration-300
                     group-hover:scale-110
                   "
-                />
-                <div
-                  className="
+                  />
+                  <div
+                    className="
                     absolute top-full mt-3 left-1/2 -translate-x-1/2
                     bg-white text-gray-900 text-sm font-semibold
                     px-3 py-1.5 rounded-lg shadow-lg
                     opacity-0 group-hover:opacity-100 transition-all duration-300
                     whitespace-nowrap border border-red-200
                   "
-                >
-                  Profile
-                </div>
-              </Link>
+                  >
+                    Profile
+                  </div>
+                </Link>
+              </div>
             ) : (
               // Not logged in: show Login button
               <Link
                 to="/login"
                 className="
                   px-5 py-2 rounded-lg bg-red-600 text-white font-medium
+                  hover:bg-red-700 transition shadow-sm
+                  hidden md:block
+                "
+              >
+                Login
+              </Link>
+            )}
+
+            {/* Mobile Menu Toggle */}
+            <button
+              className="md:hidden text-gray-900 focus:outline-none"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? (
+                <X className="w-7 h-7" />
+              ) : (
+                <Menu className="w-7 h-7" />
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Menu Dropdown */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-white border-b border-red-200 shadow-lg px-6 py-4 space-y-4">
+          {navItems.map((item) => {
+            const active = location.pathname === item.to;
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`
+                  block w-full py-2 text-lg font-semibold transition-colors
+                  ${active ? "text-red-700" : "text-gray-800 hover:text-red-700"}
+                `}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+
+          {/* Mobile Auth Section */}
+          <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
+            {isLoggedIn ? (
+              <Link
+                to="/profile"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-3 font-semibold text-gray-900"
+              >
+                <img
+                  src="/profile.jpg"
+                  alt="Profile"
+                  className="w-10 h-10 rounded-full object-cover border-2 border-red-300"
+                />
+                My Profile
+              </Link>
+            ) : (
+              <Link
+                to="/login"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="
+                  w-full text-center px-5 py-3 rounded-lg bg-red-600 text-white font-bold
                   hover:bg-red-700 transition shadow-sm
                 "
               >
@@ -118,7 +210,7 @@ const Navbar = () => {
             )}
           </div>
         </div>
-      </div>
+      )}
     </header>
   );
 };

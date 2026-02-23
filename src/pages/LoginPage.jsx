@@ -15,7 +15,7 @@ export default function LoginPage() {
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/users/login`,
-        { email, password }
+        { email, password },
       );
 
       if (!res.data.user) {
@@ -30,6 +30,7 @@ export default function LoginPage() {
 
       toast.success("Login successful");
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user)); // Store user object
 
       if (res.data.user.type === "admin") {
         navigate("/admin/dashboard");
@@ -79,10 +80,14 @@ export default function LoginPage() {
 
               <div className="mt-10 text-red-50/90 text-lg">
                 <p className="mb-6 leading-relaxed">
-                  Access your personalized dashboard,<br />
-                  track your quiz performance,<br />
-                  review your progress,<br />
-                  and continue your path to<br />
+                  Access your personalized dashboard,
+                  <br />
+                  track your quiz performance,
+                  <br />
+                  review your progress,
+                  <br />
+                  and continue your path to
+                  <br />
                   exam success.
                 </p>
 
@@ -167,7 +172,9 @@ export default function LoginPage() {
                       hover:text-gray-700
                       focus:outline-none
                     "
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
                   >
                     {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
                   </button>

@@ -1,7 +1,24 @@
 import { Link } from "react-router-dom";
-import CourseCard from "../../components/CourseCard";
+import { useState, useEffect } from "react";
+import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function HomePage() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+
+    const handleStorageChange = () => {
+      const token = localStorage.getItem("token");
+      setIsLoggedIn(!!token);
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
   return (
     <>
       {/* HERO (About Us style) */}
@@ -13,64 +30,83 @@ export default function HomePage() {
         <div className="absolute inset-x-0 bottom-0 h-px bg-linear-to-r from-transparent via-red-200/70 to-transparent" />
 
         <div className="relative max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-10 items-center">
-          
           {/* LEFT TEXT */}
-          <div>
-            <p className="text-red-700 font-semibold mb-3">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-red-700 font-semibold mb-3"
+            >
               OUSL First Year Success
-            </p>
+            </motion.p>
 
-            <h1 className="text-5xl font-extrabold leading-tight mb-6 text-gray-900">
+            <motion.h1
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="text-5xl font-extrabold leading-tight mb-6 text-gray-900"
+            >
               Start Learning <br />
               <span className="bg-linear-to-r from-red-700 via-rose-700 to-red-700 bg-clip-text text-transparent">
                 at Excellence
               </span>
-            </h1>
+            </motion.h1>
 
-            <p className="text-gray-700 text-lg max-w-xl leading-relaxed">
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="text-gray-700 text-lg max-w-xl leading-relaxed"
+            >
               Your comprehensive study platform for OUSL first-year students.
               Access past papers, interactive quizzes, study summaries, and
               compete with fellow students.
-            </p>
+            </motion.p>
 
             {/* CTA BUTTONS */}
-            <div className="mt-8 flex flex-col sm:flex-row gap-3">
-              {/* Get Started → Login */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              className="mt-8 flex flex-col sm:flex-row gap-3"
+            >
+              {/* Get Started / Course */}
               <Link
-                to="/login"
+                to={isLoggedIn ? "/course" : "/login"}
                 className="
-                  inline-flex items-center justify-center
-                  rounded-xl bg-red-700 px-6 py-3
-                  text-sm font-semibold text-white
-                  shadow-lg shadow-red-700/20
-                  transition-all duration-300
-                  hover:bg-red-800 hover:-translate-y-0.5
-                  focus:outline-none focus:ring-4 focus:ring-red-300
+                  group relative inline-flex items-center justify-center overflow-hidden
+                  rounded-xl bg-red-700 px-8 py-4
+                  text-lg font-bold text-white
+                  shadow-xl shadow-red-700/30
+                  transition-all duration-300 ease-out
+                  hover:bg-red-800 hover:shadow-red-700/50 hover:-translate-y-1
+                  focus:outline-none focus:ring-4 focus:ring-red-300 active:scale-95
                 "
               >
-                Get Started
-              </Link>
+                <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-150%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(150%)]">
+                  <div className="relative h-full w-8 bg-white/20" />
+                </div>
 
-              {/* Secondary button */}
-              <Link
-                to="/course"
-                className="
-                  inline-flex items-center justify-center
-                  rounded-xl border border-red-200 bg-white/70
-                  px-6 py-3 text-sm font-semibold text-red-800
-                  shadow-sm backdrop-blur
-                  transition-all duration-300
-                  hover:bg-white hover:-translate-y-0.5
-                  focus:outline-none focus:ring-4 focus:ring-red-200
-                "
-              >
-                Explore Courses
+                <span className="relative flex items-center gap-2">
+                  {isLoggedIn ? "Course" : "Get Started"}
+                  <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
+                </span>
               </Link>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* RIGHT IMAGE */}
-          <div className="flex justify-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, x: 30 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+            className="flex justify-center"
+          >
             <div
               className="
                 group relative max-w-md w-full
@@ -92,7 +128,7 @@ export default function HomePage() {
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -103,8 +139,12 @@ export default function HomePage() {
             { value: "8", label: "Subjects Covered" },
             { value: "500+", label: "Practice Questions" },
             { value: "24/7", label: "Hours Access" },
-          ].map((s) => (
-            <div
+          ].map((s, idx) => (
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6, delay: idx * 0.15 }}
               key={s.label}
               className="
                 group rounded-3xl border border-red-200 bg-white/80
@@ -125,7 +165,7 @@ export default function HomePage() {
               <p className="mt-4 text-sm text-red-800 font-semibold">
                 Student-first • Fast access
               </p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
