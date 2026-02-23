@@ -1,7 +1,23 @@
 import { Link } from "react-router-dom";
-import CourseCard from "../../components/CourseCard";
+import { useState, useEffect } from "react";
+import { ArrowRight } from "lucide-react";
 
 export default function HomePage() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+
+    const handleStorageChange = () => {
+      const token = localStorage.getItem("token");
+      setIsLoggedIn(!!token);
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
   return (
     <>
       {/* HERO (About Us style) */}
@@ -13,7 +29,6 @@ export default function HomePage() {
         <div className="absolute inset-x-0 bottom-0 h-px bg-linear-to-r from-transparent via-red-200/70 to-transparent" />
 
         <div className="relative max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-10 items-center">
-          
           {/* LEFT TEXT */}
           <div>
             <p className="text-red-700 font-semibold mb-3">
@@ -35,36 +50,27 @@ export default function HomePage() {
 
             {/* CTA BUTTONS */}
             <div className="mt-8 flex flex-col sm:flex-row gap-3">
-              {/* Get Started → Login */}
+              {/* Get Started / Course */}
               <Link
-                to="/login"
+                to={isLoggedIn ? "/course" : "/login"}
                 className="
-                  inline-flex items-center justify-center
-                  rounded-xl bg-red-700 px-6 py-3
-                  text-sm font-semibold text-white
-                  shadow-lg shadow-red-700/20
-                  transition-all duration-300
-                  hover:bg-red-800 hover:-translate-y-0.5
-                  focus:outline-none focus:ring-4 focus:ring-red-300
+                  group relative inline-flex items-center justify-center overflow-hidden
+                  rounded-xl bg-red-700 px-8 py-4
+                  text-lg font-bold text-white
+                  shadow-xl shadow-red-700/30
+                  transition-all duration-300 ease-out
+                  hover:bg-red-800 hover:shadow-red-700/50 hover:-translate-y-1
+                  focus:outline-none focus:ring-4 focus:ring-red-300 active:scale-95
                 "
               >
-                Get Started
-              </Link>
+                <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-150%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(150%)]">
+                  <div className="relative h-full w-8 bg-white/20" />
+                </div>
 
-              {/* Secondary button */}
-              <Link
-                to="/course"
-                className="
-                  inline-flex items-center justify-center
-                  rounded-xl border border-red-200 bg-white/70
-                  px-6 py-3 text-sm font-semibold text-red-800
-                  shadow-sm backdrop-blur
-                  transition-all duration-300
-                  hover:bg-white hover:-translate-y-0.5
-                  focus:outline-none focus:ring-4 focus:ring-red-200
-                "
-              >
-                Explore Courses
+                <span className="relative flex items-center gap-2">
+                  {isLoggedIn ? "Course" : "Get Started"}
+                  <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
+                </span>
               </Link>
             </div>
           </div>
