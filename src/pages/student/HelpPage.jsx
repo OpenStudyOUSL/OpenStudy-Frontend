@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-// Import React and useState hook to manage state in this functional component
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+// Import React, useState, and useEffect hooks to manage state and side effects
 
 // Define the functional component OpenStudyHelpStep3
 export default function OpenStudyHelpStep3() {
-  
   // ---------------- STATE VARIABLES ----------------
   const [topics, setTopics] = useState([]);
   // Array to store all topics added by users, initially empty
@@ -27,53 +27,76 @@ export default function OpenStudyHelpStep3() {
   });
   // Holds the values of inputs in Add Topic modal
 
+  // ---------------- FETCH TOPICS FUNCTION ----------------
+  useEffect(() => {
+    fetchTopics();
+  }, []);
+
+  const fetchTopics = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/topics");
+      setTopics(response.data);
+    } catch (error) {
+      console.error("Error fetching topics:", error);
+    }
+  };
+
   // ---------------- ADD TOPIC FUNCTION ----------------
-  const handleAddTopic = (e) => {
+  const handleAddTopic = async (e) => {
     e.preventDefault(); // Prevent form from reloading page
     if (!newTopic.author || !newTopic.topic) return; // Do nothing if required fields are empty
 
-    const topic = {
-      id: Date.now(), // Unique id for topic
-      author: newTopic.author,
-      topic: newTopic.topic,
-      description: newTopic.description,
-      replies: [], // Empty array for future replies
-    };
+    try {
+      const response = await axios.post("http://localhost:3000/api/topics", {
+        author: newTopic.author,
+        topic: newTopic.topic,
+        description: newTopic.description,
+      });
 
-    setTopics([topic, ...topics]); // Add new topic to the beginning of topics array
-    setNewTopic({ author: "", topic: "", description: "" }); // Reset form inputs
-    setShowAddModal(false); // Close the modal
+      // Add new topic to the beginning of topics array
+      setTopics([response.data, ...topics]);
+      setNewTopic({ author: "", topic: "", description: "" }); // Reset form inputs
+      setShowAddModal(false); // Close the modal
+    } catch (error) {
+      console.error("Error creating topic:", error);
+    }
   };
 
   // ---------------- DELETE TOPIC FUNCTION ----------------
-  const handleDeleteTopic = (id) => {
-    setTopics(topics.filter((topic) => topic.id !== id));
-    // Remove the topic with matching id from topics array
-    setDeleteConfirm(null); // Close the delete confirmation modal
+  const handleDeleteTopic = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3000/api/topics/${id}`);
+      setTopics(topics.filter((topic) => topic._id !== id));
+      // Remove the topic with matching id from topics array
+      setDeleteConfirm(null); // Close the delete confirmation modal
+    } catch (error) {
+      console.error("Error deleting topic:", error);
+    }
   };
 
   // ---------------- ADD REPLY FUNCTION ----------------
-  const handleAddReply = (topicId) => {
+  const handleAddReply = async (topicId) => {
     if (!replyText.trim()) return; // Do nothing if reply text is empty
 
-    // Update the topics array
-    setTopics(
-      topics.map((topic) =>
-        topic.id === topicId
-          ? {
-              ...topic,
-              replies: [
-                ...topic.replies,
-                { id: Date.now(), text: replyText, author: "Anonymous" }, 
-                // Add new reply to the topic's replies array
-              ],
-            }
-          : topic
-      )
-    );
+    try {
+      const response = await axios.post(
+        `http://localhost:3000/api/topics/${topicId}/replies`,
+        {
+          text: replyText,
+          author: "Anonymous", // You can update this based on logged-in user if applicable
+        },
+      );
 
-    setReplyText(""); // Clear reply text input
-    setActiveReplyTopic(null); // Close reply modal
+      // Update the topics array with the updated topic from the backend
+      setTopics(
+        topics.map((topic) => (topic._id === topicId ? response.data : topic)),
+      );
+
+      setReplyText(""); // Clear reply text input
+      setActiveReplyTopic(null); // Close reply modal
+    } catch (error) {
+      console.error("Error adding reply:", error);
+    }
   };
 
   // ---------------- JSX / UI ----------------
@@ -93,27 +116,28 @@ export default function OpenStudyHelpStep3() {
         {/* Map through topics and display them */}
         {topics.map((topic) => (
           <div
-            key={topic.id}
+            key={topic._id}
             className="bg-orange-400 text-white p-4 rounded-lg border-b-4 border-orange-600"
           >
             <div className="flex justify-between items-start">
               <div>
                 <p className="font-bold">{topic.author}</p> {/* Author */}
                 <p className="text-lg">{topic.topic}</p> {/* Topic title */}
-                <p className="text-sm opacity-90">{topic.description}</p> {/* Description */}
+                <p className="text-sm opacity-90">{topic.description}</p>{" "}
+                {/* Description */}
               </div>
 
               {/* Reply and Delete buttons */}
               <div className="flex gap-2">
                 <button
-                  onClick={() => setActiveReplyTopic(topic.id)}
+                  onClick={() => setActiveReplyTopic(topic._id)}
                   className="bg-white text-orange-600 px-3 py-1 rounded font-semibold"
                 >
                   Reply
                 </button>
 
                 <button
-                  onClick={() => setDeleteConfirm(topic.id)}
+                  onClick={() => setDeleteConfirm(topic._id)}
                   className="bg-red-500 px-3 py-1 rounded font-semibold"
                 >
                   Delete
@@ -130,10 +154,11 @@ export default function OpenStudyHelpStep3() {
 
                 {topic.replies.map((reply) => (
                   <div
-                    key={reply.id}
+                    key={reply._id}
                     className="bg-white text-gray-800 p-2 rounded mb-2"
                   >
-                    <p className="text-sm font-bold">{reply.author}</p> {/* Reply author */}
+                    <p className="text-sm font-bold">{reply.author}</p>{" "}
+                    {/* Reply author */}
                     <p className="text-sm">{reply.text}</p> {/* Reply text */}
                   </div>
                 ))}
@@ -200,7 +225,7 @@ export default function OpenStudyHelpStep3() {
               <div className="flex gap-2 pt-2">
                 <button
                   type="button"
-                  onClick={() => setShowAddModal(false)} 
+                  onClick={() => setShowAddModal(false)}
                   className="flex-1 bg-gray-300 p-2 rounded"
                 >
                   Cancel
@@ -223,7 +248,9 @@ export default function OpenStudyHelpStep3() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           {/* Modal overlay */}
           <div className="bg-white p-6 rounded-lg w-full max-w-md">
-            <h2 className="text-xl font-bold mb-3 text-orange-600">Add Reply</h2>
+            <h2 className="text-xl font-bold mb-3 text-orange-600">
+              Add Reply
+            </h2>
             <textarea
               value={replyText}
               onChange={(e) => setReplyText(e.target.value)}
