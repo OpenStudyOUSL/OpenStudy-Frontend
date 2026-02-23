@@ -6,16 +6,34 @@ const Navbar = () => {
   const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
 
   // Check login status on mount + whenever it might change
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const userStr = localStorage.getItem("user");
+
     setIsLoggedIn(!!token); // !! converts to boolean
+    if (userStr) {
+      try {
+        setUser(JSON.parse(userStr));
+      } catch (error) {
+        console.error("Failed to parse user data from localStorage");
+      }
+    }
 
     // Optional: listen for storage changes (if logout happens in another tab)
     const handleStorageChange = () => {
       const token = localStorage.getItem("token");
+      const userStr = localStorage.getItem("user");
       setIsLoggedIn(!!token);
+      if (userStr) {
+        try {
+          setUser(JSON.parse(userStr));
+        } catch (error) {}
+      } else {
+        setUser(null);
+      }
     };
 
     window.addEventListener("storage", handleStorageChange);
@@ -82,30 +100,38 @@ const Navbar = () => {
           <div className="flex items-center gap-4 md:gap-6">
             {isLoggedIn ? (
               // Logged-in: show profile icon with tooltip
-              <Link to="/profile" className="relative group">
-                <img
-                  src="/profile.jpg" // ← replace with dynamic user.profilePicture if available
-                  alt="Profile"
-                  className="
+              <div className="flex items-center gap-3">
+                {/* Desktop User Name */}
+                {user && (
+                  <span className="hidden md:block font-bold text-gray-800">
+                    {user.userName}
+                  </span>
+                )}
+                <Link to="/profile" className="relative group">
+                  <img
+                    src="/profile.jpg" // ← replace with dynamic user.profilePicture if available
+                    alt="Profile"
+                    className="
                     w-10 h-10 rounded-full object-cover
                     border-2 border-red-300
                     shadow-md
                     transition-transform duration-300
                     group-hover:scale-110
                   "
-                />
-                <div
-                  className="
+                  />
+                  <div
+                    className="
                     absolute top-full mt-3 left-1/2 -translate-x-1/2
                     bg-white text-gray-900 text-sm font-semibold
                     px-3 py-1.5 rounded-lg shadow-lg
                     opacity-0 group-hover:opacity-100 transition-all duration-300
                     whitespace-nowrap border border-red-200
                   "
-                >
-                  Profile
-                </div>
-              </Link>
+                  >
+                    Profile
+                  </div>
+                </Link>
+              </div>
             ) : (
               // Not logged in: show Login button
               <Link
