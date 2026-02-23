@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import UploadMediaUploadtoSupabase from "../../utils/mediaUpload";
 
 export default function EditProfilePage() {
   const defaultImage = "/profile.jpg"; // place this file in public/ folder
@@ -12,6 +13,7 @@ export default function EditProfilePage() {
   const [regNumber, setRegNumber] = useState("");
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
+  const [user, setUser] = useState(null);
 
   // Load current user data
   useEffect(() => {
@@ -27,16 +29,22 @@ export default function EditProfilePage() {
           `${import.meta.env.VITE_BACKEND_URL}/api/users/`,
           {
             headers: { Authorization: `Bearer ${token}` },
-          }
+          },
         );
 
         // IMPORTANT: your getUser returns req.user directly — not { user: ... }
-        const user = res.data; // ← not res.data.user
+        const userObj = res.data; // ← not res.data.user
+        setUser(userObj); // Save the entire object for fallback
 
-        setUsername(user.userName || user.username || "");
-        setEmail(user.email || "");
-        setRegNumber(user.regNo || user.registerNumber || user.registrationNumber || "");
-        setImagePreview(user.profilePicture || defaultImage);
+        setUsername(userObj.userName || userObj.username || "");
+        setEmail(userObj.email || "");
+        setRegNumber(
+          userObj.regNo ||
+            userObj.registerNumber ||
+            userObj.registrationNumber ||
+            "",
+        );
+        setImagePreview(userObj.profilePicture || defaultImage);
       } catch (error) {
         console.error("Failed to load profile:", error);
         toast.error("Could not load profile data");
@@ -68,29 +76,39 @@ export default function EditProfilePage() {
     setLoading(true);
 
     try {
-      const formData = new FormData();
-      formData.append("userName", username.trim());
-      formData.append("email", email.trim());
-      formData.append("registerNumber", regNumber.trim()); // match backend field name
+      let profilePictureUrl = user?.profilePicture; // Fallback to current if no new image
 
       if (image) {
-        formData.append("profilePicture", image);
+        toast.loading("Uploading image...", { id: "upload-toast" }); // Show uploading toast
+        const uploadResult = await UploadMediaUploadtoSupabase(image);
+        profilePictureUrl = uploadResult.publicUrl;
+        toast.success("Image uploaded!");
+        toast.dismiss("upload-toast"); // Hide upload toast on success
       }
+
+      // We use JSON here because we are sending a URL, not a file anymore
+      const payload = {
+        userName: username.trim(),
+        email: email.trim(),
+        registerNumber: regNumber.trim(),
+        profilePicture: profilePictureUrl,
+      };
 
       await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/api/users/update`, // ← make sure this route exists!
-        formData,
+        payload,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       toast.success("Profile updated successfully!");
     } catch (error) {
       console.error("Profile update error:", error);
+      toast.dismiss("upload-toast"); // Hide upload toast on error just in case
       toast.error(error?.response?.data?.message || "Failed to update profile");
     } finally {
       setLoading(false);
@@ -100,7 +118,9 @@ export default function EditProfilePage() {
   if (fetching) {
     return (
       <div className="min-h-screen bg-purple-50 flex items-center justify-center">
-        <p className="text-purple-700 text-xl animate-pulse">Loading profile...</p>
+        <p className="text-purple-700 text-xl animate-pulse">
+          Loading profile...
+        </p>
       </div>
     );
   }
@@ -110,7 +130,9 @@ export default function EditProfilePage() {
       <div className="w-full max-w-2xl bg-white rounded-3xl shadow-xl overflow-hidden">
         {/* Header */}
         <div className="bg-purple-600 px-8 py-10 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold text-white">Edit Profile</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-white">
+            Edit Profile
+          </h1>
         </div>
 
         <div className="p-8 md:p-12">
@@ -172,9 +194,11 @@ export default function EditProfilePage() {
                 disabled={loading}
                 className={`
                   w-full py-4 px-8 text-lg font-semibold rounded-2xl shadow-lg transition-all
-                  ${loading 
-                    ? "bg-gray-400 cursor-not-allowed" 
-                    : "bg-purple-600 hover:bg-purple-700 text-white hover:scale-[1.02]"}
+                  ${
+                    loading
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-purple-600 hover:bg-purple-700 text-white hover:scale-[1.02]"
+                  }
                 `}
               >
                 {loading ? "Saving..." : "Save Changes"}
