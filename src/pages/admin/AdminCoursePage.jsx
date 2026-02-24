@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import UploadMediaUploadtoSupabase from "../../utils/mediaUpload";
 
 const API = "http://localhost:3000/api/courses";
 
@@ -29,6 +30,9 @@ export default function AdminCoursePage() {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
 
+  // Image Upload State
+  const [imageFile, setImageFile] = useState(null);
+
   // ── Data Fetch ──────────────────────────────────────────────
   const fetchCourses = async () => {
     setLoading(true);
@@ -54,6 +58,7 @@ export default function AdminCoursePage() {
     setEditingCourse(null);
     setForm(EMPTY_FORM);
     setFormError("");
+    setImageFile(null);
     setShowModal(true);
   };
 
@@ -67,6 +72,7 @@ export default function AdminCoursePage() {
       courseImage: course.courseImage || "",
     });
     setFormError("");
+    setImageFile(null);
     setShowModal(true);
   };
 
@@ -75,6 +81,7 @@ export default function AdminCoursePage() {
     setEditingCourse(null);
     setForm(EMPTY_FORM);
     setFormError("");
+    setImageFile(null);
   };
 
   const handleFormChange = (e) =>
@@ -91,20 +98,29 @@ export default function AdminCoursePage() {
     setSaving(true);
     setFormError("");
     try {
+      let finalImageUrl = form.courseImage;
+
+      if (imageFile) {
+        const uploadResult = await UploadMediaUploadtoSupabase(imageFile);
+        finalImageUrl = uploadResult.publicUrl;
+      }
+
+      const payload = { ...form, courseImage: finalImageUrl };
+
       let res;
       if (editingCourse) {
         // Update
         res = await fetch(`${API}/${editingCourse._id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(form),
+          body: JSON.stringify(payload),
         });
       } else {
         // Create
         res = await fetch(API, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(form),
+          body: JSON.stringify(payload),
         });
       }
       const data = await res.json();
@@ -415,16 +431,34 @@ export default function AdminCoursePage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Image URL{" "}
+                  Course Image{" "}
                   <span className="text-gray-400 font-normal">(optional)</span>
                 </label>
                 <input
-                  name="courseImage"
-                  value={form.courseImage}
-                  onChange={handleFormChange}
-                  placeholder="https://..."
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 transition"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setImageFile(file);
+                      setForm((prev) => ({
+                        ...prev,
+                        courseImage: URL.createObjectURL(file),
+                      }));
+                    }
+                  }}
+                  className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 transition
+                    file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 />
+                {form.courseImage && (
+                  <div className="mt-3">
+                    <img
+                      src={form.courseImage}
+                      alt="Course Preview"
+                      className="w-32 h-32 object-cover rounded-xl border-2 border-dashed border-gray-300 shadow-sm"
+                    />
+                  </div>
+                )}
               </div>
 
               {formError && (
