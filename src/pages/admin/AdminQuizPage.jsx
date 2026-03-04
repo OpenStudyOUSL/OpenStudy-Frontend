@@ -422,31 +422,102 @@ export default function AdminQuizPage() {
                 </select>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+              <div className="flex flex-col gap-1 w-full">
+                <label className="block text-sm font-medium text-gray-700">
                   Topic <span className="text-red-500">*</span>
                 </label>
-                <input
-                  name="topic"
-                  value={form.topic}
-                  onChange={handleFormChange}
-                  placeholder="e.g. basics, advanced"
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 transition"
-                />
+                <div className="w-full relative">
+                  <input
+                    name="topic"
+                    value={form.topic}
+                    onChange={handleFormChange}
+                    list="topic-options"
+                    placeholder="Select or type a topic..."
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 transition"
+                  />
+                  <datalist id="topic-options">
+                    {Array.from(
+                      new Set(
+                        form.courseId
+                          ? quizzes
+                              .filter((q) => {
+                                const qCourse = q.courseId;
+                                const qId =
+                                  typeof qCourse === "object" &&
+                                  qCourse !== null
+                                    ? qCourse.courseId || qCourse._id
+                                    : qCourse;
+                                return String(qId) === String(form.courseId);
+                              })
+                              .map((q) => q.topic)
+                          : quizzes.map((q) => q.topic),
+                      ),
+                    )
+                      .filter(Boolean)
+                      .map((topic, i) => (
+                        <option key={i} value={topic} />
+                      ))}
+                  </datalist>
+                </div>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Question ID (Number) <span className="text-red-500">*</span>
                 </label>
-                <input
-                  name="quizId"
-                  type="number"
-                  value={form.quizId}
-                  onChange={handleFormChange}
-                  placeholder="e.g. 1"
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 transition"
-                />
+                <div className="relative">
+                  <input
+                    name="quizId"
+                    type="number"
+                    value={form.quizId}
+                    onChange={handleFormChange}
+                    placeholder="e.g. 1"
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 transition pr-10"
+                  />
+                  <button
+                    type="button"
+                    title="Get next available ID"
+                    onClick={() => {
+                      if (!form.topic) return;
+                      const relatedQuizzes = quizzes.filter((q) => {
+                        const matchCourse = form.courseId
+                          ? String(
+                              typeof q.courseId === "object" &&
+                                q.courseId !== null
+                                ? q.courseId.courseId || q.courseId._id
+                                : q.courseId,
+                            ) === String(form.courseId)
+                          : true;
+                        return matchCourse && q.topic === form.topic;
+                      });
+                      const usedIds = relatedQuizzes
+                        .map((q) => Number(q.quizId))
+                        .filter((n) => !isNaN(n));
+                      const nextId =
+                        usedIds.length > 0 ? Math.max(...usedIds) + 1 : 1;
+                      setForm((prev) => ({
+                        ...prev,
+                        quizId: nextId.toString(),
+                      }));
+                    }}
+                    className="absolute inset-y-0 right-2 flex items-center justify-center text-blue-500 hover:text-blue-700"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-5 h-5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </div>
 
               <div>
