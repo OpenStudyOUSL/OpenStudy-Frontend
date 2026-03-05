@@ -74,7 +74,7 @@ const navItemClass = `
 const activeNavItemClass = `
   flex items-center justify-center px-5 py-3 rounded-xl
   text-white font-semibold tracking-wide
-  bg-white/30 backdrop-blur-md translate-x-2
+  bg-primary-500/40 backdrop-blur-md translate-x-2
   transition-all duration-300 cursor-pointer shadow-sm
   border border-white/40
 `;
@@ -166,9 +166,9 @@ export default function AdminDashboard() {
   });
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-blue-50 via-sky-100 to-indigo-200">
+    <div className="flex min-h-screen bg-primary-50">
       {/* ===== Sidebar ===== */}
-      <div className="fixed inset-y-0 left-0 w-[20%] bg-gradient-to-b from-cyan-500 to-blue-600 flex flex-col items-center z-50 overflow-y-auto shadow-2xl border-r border-white/30">
+      <div className="fixed inset-y-0 left-0 w-[20%] bg-gradient-to-b from-primary-700 to-primary-900 flex flex-col items-center z-50 overflow-y-auto shadow-2xl border-r border-white/20">
         <div className="mt-10 flex flex-row items-center space-x-4 w-3/4">
           <img src="/uniLogo.png" alt="Logo" className="w-10 h-10" />
           <h1 className="font-bold text-2xl text-white">Open Study</h1>
@@ -176,6 +176,7 @@ export default function AdminDashboard() {
         <h2 className="font-semibold text-2xl text-blue-50 mt-6 mb-10 tracking-wide drop-shadow">
           Admin Panel
         </h2>
+        {/* Menu */}
         <div className="w-full px-6 space-y-3">
           <div className={activeNavItemClass}>Dashboard</div>
           <Link to="/admin/students" className="block">
@@ -251,14 +252,14 @@ export default function AdminDashboard() {
               label="Total Users"
               value={users.length}
               sub="all roles"
-              gradient="bg-gradient-to-br from-cyan-400 to-blue-500"
+              gradient="bg-gradient-to-br from-primary-400 to-primary-600"
               icon="👥"
             />
             <StatCard
               label="Students"
               value={studentCount}
               sub="active learners"
-              gradient="bg-gradient-to-br from-emerald-400 to-teal-500"
+              gradient="bg-gradient-to-br from-rose-400 to-rose-600"
               icon="🎓"
             />
             <StatCard
@@ -297,7 +298,7 @@ export default function AdminDashboard() {
             {/* Students */}
             <Link to="/admin/students">
               <div className="bg-white rounded-2xl shadow-md border border-blue-50 p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-200 cursor-pointer group h-full">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center mb-4 shadow group-hover:scale-110 transition-transform text-xl">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center mb-4 shadow group-hover:scale-110 transition-transform text-xl">
                   👥
                 </div>
                 <h3 className="font-bold text-gray-800 text-lg">Students</h3>
@@ -315,7 +316,7 @@ export default function AdminDashboard() {
             {/* Courses */}
             <Link to="/admin/courses">
               <div className="bg-white rounded-2xl shadow-md border border-blue-50 p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-200 cursor-pointer group h-full">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-400 to-purple-600 flex items-center justify-center mb-4 shadow group-hover:scale-110 transition-transform text-xl">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center mb-4 shadow group-hover:scale-110 transition-transform text-xl">
                   📚
                 </div>
                 <h3 className="font-bold text-gray-800 text-lg">Courses</h3>
@@ -379,7 +380,7 @@ export default function AdminDashboard() {
           ) : (
             <table className="w-full text-left">
               <thead>
-                <tr className="bg-gradient-to-r from-cyan-50 to-blue-50">
+                <tr className="bg-primary-50/50">
                   <th className="px-6 py-3 text-xs font-semibold text-blue-600 uppercase tracking-wider">
                     User
                   </th>
@@ -416,7 +417,7 @@ export default function AdminDashboard() {
                         />
                       ) : null}
                       <div
-                        className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                        className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
                         style={{ display: u.profilePicture ? "none" : "flex" }}
                       >
                         {u.userName?.charAt(0)?.toUpperCase() || "U"}

@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import UploadMediaUploadtoSupabase from "../../utils/mediaUpload";
 
-const COURSES_API = "http://localhost:3000/api/courses";
-const QUIZZES_API = "http://localhost:3000/api/quizzes";
+const COURSES_API = `${import.meta.env.VITE_BACKEND_URL}/api/courses`;
+const QUIZZES_API = `${import.meta.env.VITE_BACKEND_URL}/api/quizzes`;
 
 const EMPTY_FORM = {
   courseId: "",
@@ -240,9 +240,9 @@ export default function AdminQuizPage() {
   `;
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-blue-50 via-sky-100 to-indigo-200">
+    <div className="flex min-h-screen bg-primary-50">
       {/* ===== Sidebar ===== */}
-      <div className="fixed inset-y-0 left-0 w-[20%] bg-gradient-to-b from-cyan-500 to-blue-600 flex flex-col items-center z-50 overflow-y-auto shadow-2xl border-r border-white/30">
+      <div className="fixed inset-y-0 left-0 w-[20%] bg-gradient-to-b from-primary-700 to-primary-900 flex flex-col items-center z-50 overflow-y-auto shadow-2xl border-r border-white/20">
         {/* Logo */}
         <div className="mt-10 flex flex-row items-center space-x-4 w-3/4">
           <img src="/uniLogo.png" alt="Logo" className="w-10 h-10" />
@@ -256,13 +256,13 @@ export default function AdminQuizPage() {
 
         {/* Menu */}
         <div className="w-full px-6 space-y-3">
-          <Link to="/admin/dashboard">
+          <Link to="/admin/dashboard" className="block">
             <div className={navItemClass}>Dashboard</div>
           </Link>
-          <Link to="/admin/students">
+          <Link to="/admin/students" className="block">
             <div className={navItemClass}>Students</div>
           </Link>
-          <Link to="/admin/courses">
+          <Link to="/admin/courses" className="block">
             <div className={navItemClass}>Courses</div>
           </Link>
           <div className={activeNavItemClass}>Quizzes</div>
@@ -294,7 +294,7 @@ export default function AdminQuizPage() {
           </div>
           <button
             onClick={openCreate}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
+            className="flex items-center gap-2 px-6 py-3 bg-primary-600 text-white font-semibold rounded-xl shadow-lg hover:bg-primary-700 transition-all duration-200"
           >
             <span className="text-xl leading-none">+</span>
             Add Quiz Question
@@ -338,7 +338,7 @@ export default function AdminQuizPage() {
           <div className="bg-white rounded-2xl shadow-md border border-blue-50 overflow-hidden">
             <table className="w-full text-left">
               <thead>
-                <tr className="bg-gradient-to-r from-cyan-50 to-blue-50 border-b border-blue-100">
+                <tr className="bg-primary-50/50 border-b border-primary-100">
                   <th className="px-6 py-4 text-xs font-semibold text-blue-600 uppercase tracking-wider">
                     Q ID
                   </th>
@@ -453,7 +453,7 @@ export default function AdminQuizPage() {
                     onChange={handleFormChange}
                     list="topic-options"
                     placeholder="Select or type a topic..."
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 transition"
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-400 text-gray-800 transition"
                   />
                   <datalist id="topic-options">
                     {Array.from(
@@ -492,7 +492,7 @@ export default function AdminQuizPage() {
                     value={form.quizId}
                     onChange={handleFormChange}
                     placeholder="e.g. 1"
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 transition pr-10"
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-400 text-gray-800 transition pr-10"
                   />
                   <button
                     type="button"
@@ -520,7 +520,7 @@ export default function AdminQuizPage() {
                         quizId: nextId.toString(),
                       }));
                     }}
-                    className="absolute inset-y-0 right-2 flex items-center justify-center text-blue-500 hover:text-blue-700"
+                    className="absolute inset-y-0 right-2 flex items-center justify-center text-primary-500 hover:text-primary-700"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -565,7 +565,7 @@ export default function AdminQuizPage() {
                   onChange={handleFormChange}
                   rows={2}
                   placeholder="Enter the question text..."
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 transition resize-none"
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-400 text-gray-800 transition resize-none"
                 />
               </div>
 
@@ -595,7 +595,7 @@ export default function AdminQuizPage() {
                         }
                         disabled={form.questionType === "TRUE_FALSE"}
                         placeholder={`Option ${index + 1}`}
-                        className={`flex-1 px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 transition ${form.questionType === "TRUE_FALSE" ? "bg-gray-50 text-gray-500" : ""}`}
+                        className={`flex-1 px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-400 text-gray-800 transition ${form.questionType === "TRUE_FALSE" ? "bg-gray-50 text-gray-500" : ""}`}
                       />
                       {form.questionType === "MCQ" &&
                         form.options.length > 2 && (
@@ -760,7 +760,7 @@ export default function AdminQuizPage() {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold hover:opacity-90 transition disabled:opacity-60"
+                className="flex-1 py-2.5 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 transition-all disabled:opacity-60"
               >
                 {saving ? "Creating…" : "Create Question"}
               </button>

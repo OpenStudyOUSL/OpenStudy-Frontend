@@ -37,7 +37,11 @@ function StudentLayout() {
 
 // Layout for admin (no navbar, no footer — clean dashboard)
 function AdminLayout() {
-  return <Outlet />; // ← just renders the admin pages
+  return (
+    <div className="theme-admin min-h-screen">
+      <Outlet />
+    </div>
+  );
 }
 
 function App() {
