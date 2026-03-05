@@ -97,7 +97,7 @@ function LeaderboardPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/leaderboard")
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/leaderboard`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch leaderboard");
         return res.json();
