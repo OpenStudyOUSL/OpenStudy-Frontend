@@ -13,11 +13,10 @@ export default function QuizCard({
 }) {
   // Normalize options for TRUE/FALSE (in case stored differently)
   const displayOptions =
-    questionType === "TRUE_FALSE"
-      ? ["True", "False"]
-      : options;
+    questionType === "TRUE_FALSE" ? ["True", "False"] : options;
 
-  const isTrueFalse = questionType === "TRUE_FALSE" || displayOptions.length === 2;
+  const isTrueFalse =
+    questionType === "TRUE_FALSE" || displayOptions.length === 2;
 
   return (
     <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 max-w-3xl w-full mx-auto">
@@ -44,18 +43,22 @@ export default function QuizCard({
                 border-2 transition-all duration-200
                 disabled:cursor-not-allowed
 
-                ${isSelected && !showFeedback
-                  ? "border-emerald-500 bg-emerald-50/70 text-emerald-800"
-                  : ""}
-                ${isRight
-                  ? "border-emerald-600 bg-emerald-100 text-emerald-900 font-semibold shadow-md"
-                  : ""}
-                ${isWrong
-                  ? "border-red-500 bg-red-50 text-red-900"
-                  : ""}
-                ${!isSelected && !showFeedback
-                  ? "border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50/80 active:scale-[0.98]"
-                  : ""}
+                ${
+                  isSelected && !showFeedback
+                    ? "border-primary-500 bg-primary-50/70 text-primary-800"
+                    : ""
+                }
+                ${
+                  isRight
+                    ? "border-emerald-600 bg-emerald-100 text-emerald-900 font-semibold shadow-md"
+                    : ""
+                }
+                ${isWrong ? "border-red-500 bg-red-50 text-red-900" : ""}
+                ${
+                  !isSelected && !showFeedback
+                    ? "border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50/80 active:scale-[0.98]"
+                    : ""
+                }
               `}
             >
               <div className="flex items-center gap-4">

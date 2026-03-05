@@ -147,7 +147,7 @@ export default function EditProfilePage() {
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          className="w-12 h-12 border-4 border-purple-200 border-t-purple-600 rounded-full"
+          className="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full"
         />
       </div>
     );
@@ -156,8 +156,8 @@ export default function EditProfilePage() {
   return (
     <div className="min-h-screen bg-slate-50 relative overflow-hidden font-sans py-12 px-4">
       {/* Background Blobs */}
-      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-purple-200 rounded-full blur-[100px] opacity-30 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-200 rounded-full blur-[100px] opacity-30 pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary-200 rounded-full blur-[100px] opacity-30 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-accent-200 rounded-full blur-[100px] opacity-30 pointer-events-none" />
 
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
@@ -167,7 +167,7 @@ export default function EditProfilePage() {
         <div className="bg-white/70 backdrop-blur-2xl border border-white/50 shadow-2xl rounded-[2.5rem] overflow-hidden">
           <div className="grid lg:grid-cols-5 h-full">
             {/* Left Panel - Visuals */}
-            <div className="lg:col-span-2 bg-gradient-to-br from-purple-700 to-indigo-800 p-8 sm:p-12 text-white flex flex-col items-center justify-center text-center">
+            <div className="lg:col-span-2 bg-gradient-to-br from-primary-700 to-primary-900 p-8 sm:p-12 text-white flex flex-col items-center justify-center text-center">
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 className="relative mb-8"
@@ -201,7 +201,7 @@ export default function EditProfilePage() {
                       </svg>
                     </button>
                   )}
-                  <label className="p-3 bg-white text-purple-700 rounded-full shadow-lg cursor-pointer hover:bg-purple-50 transition-colors">
+                  <label className="p-3 bg-white text-primary-700 rounded-full shadow-lg cursor-pointer hover:bg-primary-50 transition-colors">
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -318,7 +318,7 @@ export default function EditProfilePage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-4 bg-gradient-to-r from-purple-700 to-indigo-700 text-white font-black text-lg rounded-2xl shadow-xl shadow-indigo-200 hover:shadow-indigo-300 hover:-translate-y-1 active:scale-[0.98] transition-all disabled:opacity-50 disabled:pointer-events-none"
+                    className="w-full py-4 bg-gradient-to-r from-primary-700 to-primary-600 text-white font-black text-lg rounded-2xl shadow-xl shadow-primary-200 hover:shadow-primary-300 hover:-translate-y-1 active:scale-[0.98] transition-all disabled:opacity-50 disabled:pointer-events-none"
                   >
                     {loading ? (
                       <span className="flex items-center justify-center gap-2">
@@ -364,14 +364,14 @@ function InputField({ label, value, onChange, type = "text", icon }) {
         {label}
       </label>
       <div className="relative group">
-        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-600 transition-colors">
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary-600 transition-colors">
           {icon}
         </div>
         <input
           type={type}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:bg-white focus:border-purple-600 focus:ring-4 focus:ring-purple-100 transition-all outline-none text-gray-800 font-semibold"
+          className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:bg-white focus:border-primary-600 focus:ring-4 focus:ring-primary-100 transition-all outline-none text-gray-800 font-semibold"
         />
       </div>
     </div>

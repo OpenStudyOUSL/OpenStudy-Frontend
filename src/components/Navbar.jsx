@@ -64,8 +64,8 @@ const Navbar = () => {
     <header className="sticky top-0 z-50">
       <div className="relative overflow-hidden border-b border-red-300/80 bg-gray-100/80 backdrop-blur">
         {/* Background glow */}
-        <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-red-500/25 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-28 -left-28 h-80 w-80 rounded-full bg-rose-500/25 blur-3xl" />
+        <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-primary-500/25 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-28 -left-28 h-80 w-80 rounded-full bg-primary-400/25 blur-3xl" />
 
         <div className="relative mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
           {/* Brand */}
@@ -84,7 +84,7 @@ const Navbar = () => {
                   to={item.to}
                   className={`
                     relative px-1 transition-all duration-300
-                    ${active ? "text-red-800" : "text-gray-900 hover:text-red-800"}
+                    ${active ? "text-primary-700" : "text-gray-900 hover:text-primary-600"}
                     hover:-translate-y-0.5
                   `}
                 >
@@ -92,7 +92,7 @@ const Navbar = () => {
                   <span
                     className={`
                       absolute left-1/2 -translate-x-1/2 -bottom-1
-                      h-0.5 rounded-full bg-gradient-to-r from-red-700 to-rose-700
+                      h-0.5 rounded-full bg-gradient-to-r from-primary-600 to-primary-500
                       transition-all duration-300
                       ${active ? "w-4/5" : "w-0 hover:w-4/5"}
                     `}
@@ -126,7 +126,7 @@ const Navbar = () => {
                     }}
                     className="
                     w-10 h-10 rounded-full object-cover
-                    border-2 border-red-300
+                    border-2 border-primary-200
                     shadow-md
                     transition-transform duration-300
                     group-hover:scale-110
@@ -150,8 +150,8 @@ const Navbar = () => {
               <Link
                 to="/login"
                 className="
-                  px-5 py-2 rounded-lg bg-red-600 text-white font-medium
-                  hover:bg-red-700 transition shadow-sm
+                  px-5 py-2 rounded-lg bg-primary-600 text-white font-medium
+                  hover:bg-primary-700 transition shadow-sm
                   hidden md:block
                 "
               >

@@ -49,17 +49,17 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-linear-to-br from-red-50 via-rose-50 to-white flex items-center justify-center p-6">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-primary-50 via-primary-50 to-white flex items-center justify-center p-6">
       {/* Soft overlay + glows (like About page) */}
-      <div className="absolute inset-0 bg-linear-to-br from-red-700/10 via-rose-600/6 to-transparent" />
-      <div className="pointer-events-none absolute -top-48 -right-40 h-104 w-104 rounded-full bg-red-400/20 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-52 -left-40 h-112 w-md rounded-full bg-rose-400/20 blur-3xl" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-700/10 via-primary-600/6 to-transparent" />
+      <div className="pointer-events-none absolute -top-48 -right-40 h-104 w-104 rounded-full bg-primary-400/20 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-52 -left-40 h-112 w-md rounded-full bg-primary-400/20 blur-3xl" />
 
       {/* Card */}
-      <div className="relative w-full max-w-6xl rounded-3xl border border-red-200/60 bg-white/75 backdrop-blur-xl shadow-2xl shadow-red-900/10 overflow-hidden">
+      <div className="relative w-full max-w-6xl rounded-3xl border border-primary-200/60 bg-white/75 backdrop-blur-xl shadow-2xl shadow-primary-900/10 overflow-hidden">
         <div className="grid md:grid-cols-2">
           {/* LEFT SIDE (brand panel) */}
-          <div className="hidden md:flex flex-col justify-center p-12 lg:p-16 relative overflow-hidden bg-linear-to-br from-red-700 via-rose-700 to-red-800 text-white">
+          <div className="hidden md:flex flex-col justify-center p-12 lg:p-16 relative overflow-hidden bg-gradient-to-br from-primary-700 via-primary-600 to-primary-800 text-white">
             {/* glow inside */}
             <div className="pointer-events-none absolute -top-20 -left-20 h-80 w-80 rounded-full bg-white/15 blur-3xl" />
             <div className="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-white/10 blur-3xl" />
@@ -131,7 +131,7 @@ export default function LoginPage() {
                       bg-white
                       outline-none
                       transition-all duration-300
-                      focus:border-red-500 focus:ring-4 focus:ring-red-200/60
+                      focus:border-primary-500 focus:ring-4 focus:ring-primary-200/60
                       hover:border-gray-400
                     "
                     placeholder="Enter your email"
@@ -154,7 +154,7 @@ export default function LoginPage() {
                       bg-white
                       outline-none
                       transition-all duration-300
-                      focus:border-red-500 focus:ring-4 focus:ring-red-200/60
+                      focus:border-primary-500 focus:ring-4 focus:ring-primary-200/60
                       hover:border-gray-400
                       pr-12
                     "
@@ -182,7 +182,7 @@ export default function LoginPage() {
 
                 {/* Forgot */}
                 <div className="flex justify-end">
-                  <span className="text-red-700 hover:text-red-900 text-sm font-semibold cursor-pointer transition-colors">
+                  <span className="text-primary-700 hover:text-primary-900 text-sm font-semibold cursor-pointer transition-colors">
                     Forgot password?
                   </span>
                 </div>
@@ -192,13 +192,13 @@ export default function LoginPage() {
                   type="submit"
                   className="
                     w-full rounded-xl
-                    bg-linear-to-r from-red-700 via-rose-700 to-red-800
+                    bg-gradient-to-r from-primary-700 via-primary-600 to-primary-800
                     text-white font-semibold
                     py-4
-                    shadow-lg shadow-red-700/20
+                    shadow-lg shadow-primary-700/20
                     transition-all duration-300
-                    hover:-translate-y-0.5 hover:shadow-xl hover:shadow-red-700/25
-                    focus:outline-none focus:ring-4 focus:ring-red-300
+                    hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary-700/25
+                    focus:outline-none focus:ring-4 focus:ring-primary-300
                   "
                 >
                   Log in
@@ -209,7 +209,7 @@ export default function LoginPage() {
                 Don&apos;t have an account?{" "}
                 <Link
                   to="/signup"
-                  className="text-red-700 font-semibold hover:text-red-900 transition-colors"
+                  className="text-primary-700 font-semibold hover:text-primary-900 transition-colors"
                 >
                   Sign up
                 </Link>
