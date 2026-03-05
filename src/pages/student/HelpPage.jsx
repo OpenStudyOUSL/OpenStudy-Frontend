@@ -34,7 +34,9 @@ export default function OpenStudyHelpStep3() {
 
   const fetchTopics = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/topics");
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/topics`,
+      );
       setTopics(response.data);
     } catch (error) {
       console.error("Error fetching topics:", error);
@@ -47,11 +49,14 @@ export default function OpenStudyHelpStep3() {
     if (!newTopic.author || !newTopic.topic) return; // Do nothing if required fields are empty
 
     try {
-      const response = await axios.post("http://localhost:3000/api/topics", {
-        author: newTopic.author,
-        topic: newTopic.topic,
-        description: newTopic.description,
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/topics`,
+        {
+          author: newTopic.author,
+          topic: newTopic.topic,
+          description: newTopic.description,
+        },
+      );
 
       // Add new topic to the beginning of topics array
       setTopics([response.data, ...topics]);
@@ -65,7 +70,9 @@ export default function OpenStudyHelpStep3() {
   // ---------------- DELETE TOPIC FUNCTION ----------------
   const handleDeleteTopic = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/api/topics/${id}`);
+      await axios.delete(
+        `${import.meta.env.VITE_BACKEND_URL}/api/topics/${id}`,
+      );
       setTopics(topics.filter((topic) => topic._id !== id));
       // Remove the topic with matching id from topics array
       setDeleteConfirm(null); // Close the delete confirmation modal
@@ -80,7 +87,7 @@ export default function OpenStudyHelpStep3() {
 
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/topics/${topicId}/replies`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/topics/${topicId}/replies`,
         {
           text: replyText,
           author: "Anonymous", // You can update this based on logged-in user if applicable
