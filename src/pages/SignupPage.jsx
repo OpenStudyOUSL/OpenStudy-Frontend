@@ -34,7 +34,19 @@ export default function SignUpPage() {
 
     try {
       if (profilePictureFile) {
-        profilePictureUrl = await UploadMediaUploadtoSupabase(profilePictureFile);
+        try {
+          const uploadResult =
+            await UploadMediaUploadtoSupabase(profilePictureFile);
+          profilePictureUrl = uploadResult.publicUrl;
+        } catch (uploadErr) {
+          const errMsg =
+            typeof uploadErr === "string"
+              ? uploadErr
+              : uploadErr.message || "Failed to upload profile picture.";
+          toast.error(errMsg);
+          setLoading(false);
+          return;
+        }
       }
 
       await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/users/signup`, {
@@ -49,7 +61,9 @@ export default function SignUpPage() {
       navigate("/login");
     } catch (error) {
       console.error(error);
-      toast.error("User creation failed");
+      const backendMessage =
+        error?.response?.data?.message || "User creation failed";
+      toast.error(backendMessage);
     } finally {
       setLoading(false);
     }
@@ -106,10 +120,14 @@ export default function SignUpPage() {
               </p>
 
               <p className="mt-10 text-red-50/90 text-xl leading-relaxed">
-                Access your personalized dashboard,<br />
-                track your quiz performance,<br />
-                review your progress,<br />
-                and continue your path to<br />
+                Access your personalized dashboard,
+                <br />
+                track your quiz performance,
+                <br />
+                review your progress,
+                <br />
+                and continue your path to
+                <br />
                 exam success.
               </p>
 
@@ -233,7 +251,9 @@ export default function SignUpPage() {
               {/* Button */}
               <button
                 type="submit"
-                disabled={loading || !passwordsMatch || !password || !confirmPassword}
+                disabled={
+                  loading || !passwordsMatch || !password || !confirmPassword
+                }
                 className="
                   w-full rounded-xl
                   bg-linear-to-r from-red-700 via-rose-700 to-red-800
@@ -251,7 +271,10 @@ export default function SignUpPage() {
 
             <p className="text-center mt-8 text-sm text-gray-600">
               Already have an account?{" "}
-              <Link to="/login" className="text-red-700 font-semibold hover:text-red-900 transition">
+              <Link
+                to="/login"
+                className="text-red-700 font-semibold hover:text-red-900 transition"
+              >
                 Log in
               </Link>
             </p>

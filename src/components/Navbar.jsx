@@ -37,7 +37,13 @@ const Navbar = () => {
     };
 
     window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
+    // Listen for custom event within the same tab
+    window.addEventListener("userUpdated", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("userUpdated", handleStorageChange);
+    };
   }, []);
 
   const navItems = [
@@ -109,8 +115,15 @@ const Navbar = () => {
                 )}
                 <Link to="/profile" className="relative group">
                   <img
-                    src="/profile.jpg" // ← replace with dynamic user.profilePicture if available
+                    src={
+                      user?.profilePicture ||
+                      "https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg"
+                    }
                     alt="Profile"
+                    onError={(e) => {
+                      e.target.src =
+                        "https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg";
+                    }}
                     className="
                     w-10 h-10 rounded-full object-cover
                     border-2 border-red-300
@@ -190,8 +203,15 @@ const Navbar = () => {
                 className="flex items-center gap-3 font-semibold text-gray-900"
               >
                 <img
-                  src="/profile.jpg"
+                  src={
+                    user?.profilePicture ||
+                    "https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg"
+                  }
                   alt="Profile"
+                  onError={(e) => {
+                    e.target.src =
+                      "https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg";
+                  }}
                   className="w-10 h-10 rounded-full object-cover border-2 border-red-300"
                 />
                 My Profile

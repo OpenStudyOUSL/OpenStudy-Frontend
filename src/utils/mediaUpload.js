@@ -1,34 +1,61 @@
 import { createClient } from "@supabase/supabase-js";
 
-const url = "https://nqxgtzkwhgxzovljugyp.supabase.co";
-
-const key =`eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xeGd0emt3aGd4em92bGp1Z3lwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkwMDk4OTUsImV4cCI6MjA4NDU4NTg5NX0.ZoXFwSz5m_iVzzKw2tQDYa633m7GcIoNQCN0fKx2-xU`;
-
-
-export default function UploadMediaUploadtoSupabase(file){
+export default function UploadMediaUploadtoSupabase(file) {
   return new Promise((resolve, reject) => {
-    if (file == null) {
+    // Lazy initialize to ensure env vars are loaded
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
+
+    if (!supabaseUrl || !supabaseKey) {
+      console.error("Supabase credentials missing in .env!");
+      reject("Supabase configuration error.");
+      return;
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    if (!file) {
       reject("Please select a file first!");
       return;
     }
-    let file_name = file.name;
-    const extension = file_name.split('.')[file_name.split('.').length - 1];
-    if(extension != "jpg" && extension!="png"){
-      reject("Only JPG and PNG files are allowed!");
+
+    const fileName = file.name;
+    const extension = fileName.split(".").pop().toLowerCase();
+
+    if (extension !== "jpg" && extension !== "png" && extension !== "jpeg") {
+      reject("Only JPG, JPEG, and PNG files are allowed!");
       return;
     }
-    const supabase = createClient(url, key);
-    const timeStamp = new Date().getTime();
-    file_name = timeStamp + "." + extension;
 
-    supabase.storage.from("openstudy").upload(file_name, file, {
-      cacheControl: "3600",
-      upsert: false
-    }).then((res) => {
-      const publicUrl = supabase.storage.from("openstudy").getPublicUrl(file_name).data.publicUrl;
-      resolve({publicUrl});
-    }).catch((error) => {
-      reject(error);
-    });
+    const timeStamp = new Date().getTime();
+    const newFileName = `${timeStamp}.${extension}`;
+
+    console.log("Attempting upload to Supabase:", newFileName);
+
+    supabase.storage
+      .from("openstudy")
+      .upload(newFileName, file, {
+        cacheControl: "3600",
+        upsert: false,
+      })
+      .then((res) => {
+        if (res.error) {
+          console.error("Supabase Upload Error:", res.error);
+          reject(res.error.message || "Upload failed");
+          return;
+        }
+
+        const { data } = supabase.storage
+          .from("openstudy")
+          .getPublicUrl(newFileName);
+        
+        console.log("Upload successful! Public URL:", data.publicUrl);
+        resolve({ publicUrl: data.publicUrl });
+      })
+      .catch((error) => {
+        console.error("Supabase Promise Catch:", error);
+        reject(error);
+      });
   });
 }
+
