@@ -63,6 +63,10 @@ function TopCard({ place, user, big }) {
             "https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg"
           }
           alt={user.userName}
+          onError={(e) => {
+            e.target.src =
+              "https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg";
+          }}
           className="h-full w-full object-cover"
         />
       </div>
@@ -198,7 +202,11 @@ function LeaderboardPage() {
                         "https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg"
                       }
                       alt={r.userName}
-                      className="w-6 h-6 rounded-full object-cover shadow-sm"
+                      onError={(e) => {
+                        e.target.src =
+                          "https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg";
+                      }}
+                      className="w-10 h-10 rounded-full object-cover shadow-sm"
                     />
                     {r.userName}
                   </div>

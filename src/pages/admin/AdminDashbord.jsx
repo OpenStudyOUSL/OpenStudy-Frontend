@@ -404,7 +404,21 @@ export default function AdminDashboard() {
                     className="hover:bg-blue-50/30 transition-colors"
                   >
                     <td className="px-6 py-3 flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                      {u.profilePicture ? (
+                        <img
+                          src={u.profilePicture}
+                          alt={u.userName}
+                          className="w-8 h-8 rounded-full object-cover border border-blue-100 shadow-sm"
+                          onError={(e) => {
+                            e.target.style.display = "none";
+                            e.target.nextSibling.style.display = "flex";
+                          }}
+                        />
+                      ) : null}
+                      <div
+                        className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                        style={{ display: u.profilePicture ? "none" : "flex" }}
+                      >
                         {u.userName?.charAt(0)?.toUpperCase() || "U"}
                       </div>
                       <span className="font-medium text-gray-800 text-sm">

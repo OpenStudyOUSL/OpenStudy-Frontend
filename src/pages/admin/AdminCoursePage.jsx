@@ -101,8 +101,18 @@ export default function AdminCoursePage() {
       let finalImageUrl = form.courseImage;
 
       if (imageFile) {
-        const uploadResult = await UploadMediaUploadtoSupabase(imageFile);
-        finalImageUrl = uploadResult.publicUrl;
+        try {
+          const uploadResult = await UploadMediaUploadtoSupabase(imageFile);
+          finalImageUrl = uploadResult.publicUrl;
+        } catch (uploadErr) {
+          const errMsg =
+            typeof uploadErr === "string"
+              ? uploadErr
+              : uploadErr.message || "Image upload failed";
+          setFormError(errMsg);
+          setSaving(false);
+          return;
+        }
       }
 
       const payload = { ...form, courseImage: finalImageUrl };
