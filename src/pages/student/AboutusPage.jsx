@@ -30,47 +30,47 @@ const teamMembers = [
     regNo: "423600376",
     role: "Frontend Dev. & Testing",
     skills: ["React", "Tailwind", "Teamwork"],
-    image: malingaImg
+    image: malingaImg,
   },
   {
     name: "W.M.W. Wijesinghe",
     regNo: "123599265",
     role: "UI/UX & Backend Dev.",
     skills: ["UI/UX", "MongoDB", "Node.js"],
-    image: wijesingheImg
+    image: wijesingheImg,
   },
   {
     name: "T. Jayawickrama",
     regNo: "223593459",
     role: "Frontend Dev.",
     skills: ["React", "Tailwind", "Express"],
-    image: jayawickramaImg
+    image: jayawickramaImg,
   },
   {
     name: "K.G.A.S. Sameera",
     regNo: "223605905",
     role: "Full-Stack Dev.",
     skills: ["Node.js", "MongoDB", "Express", "React"],
-    image: sameeraImg
+    image: sameeraImg,
   },
   {
     name: "N.K. Dasanayaka",
     regNo: "323606637",
     role: "Frontend Dev. & Testing",
     skills: ["React", "Testing", "Tailwind"],
-    image: dasanayakaImg
+    image: dasanayakaImg,
   },
 ];
 
 const AboutUs = () => {
   return (
-    <div className="min-h-screen bg-linear-to-br from-red-50 via-rose-50 to-white text-gray-900">
+    <div className="min-h-[calc(100vh-140px)] bg-primary-50 text-gray-900">
       {/* HERO */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-linear-to-br from-red-700/10 via-rose-600/6 to-transparent" />
-        <div className="absolute -top-48 -right-40 h-104 w-104 rounded-full bg-red-400/20 blur-3xl" />
-        <div className="absolute -bottom-52 -left-40 h-112 w-md rounded-full bg-rose-400/20 blur-3xl" />
-        <div className="absolute inset-x-0 bottom-0 h-px bg-linear-to-r from-transparent via-red-200/70 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-700/10 via-primary-600/6 to-transparent" />
+        <div className="absolute -top-48 -right-40 h-104 w-104 rounded-full bg-primary-400/20 blur-3xl" />
+        <div className="absolute -bottom-52 -left-40 h-112 w-md rounded-full bg-primary-400/20 blur-3xl" />
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary-200/70 to-transparent" />
 
         <div className="relative mx-auto max-w-6xl px-6 pt-24 pb-18 md:pt-28 md:pb-24">
           <motion.div
@@ -79,34 +79,35 @@ const AboutUs = () => {
             transition={{ duration: 0.7, ease: "easeOut" }}
             className="text-center"
           >
-            <span className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-white/70 px-4 py-2 text-sm font-semibold text-red-800 shadow-sm backdrop-blur">
-              <span className="inline-block h-2 w-2 rounded-full bg-red-500" />
+            <span className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white/70 px-4 py-2 text-sm font-semibold text-primary-800 shadow-sm backdrop-blur">
+              <span className="inline-block h-2 w-2 rounded-full bg-primary-500" />
               OUSL Student Project 2025–2026
             </span>
 
             <h1 className="mt-7 text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
               Transforming Exam Prep
               <br />
-              <span className="bg-linear-to-r from-red-700 via-rose-700 to-red-700 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary-700 via-primary-500 to-primary-700 bg-clip-text text-transparent">
                 for OUSL First Years
               </span>
             </h1>
 
             <p className="mx-auto mt-6 max-w-3xl text-lg text-gray-800 md:text-xl">
-              Built with passion by final-year students who truly understand the struggle —
-              designed to save time, reduce stress, and boost results.
+              Built with passion by final-year students who truly understand the
+              struggle — designed to save time, reduce stress, and boost
+              results.
             </p>
 
             <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <a
                 href="#story"
-                className="inline-flex items-center justify-center rounded-xl bg-red-700 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-red-700/20 transition hover:bg-red-800 focus:outline-hidden focus:ring-4 focus:ring-red-300"
+                className="inline-flex items-center justify-center rounded-xl bg-primary-700 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-primary-700/20 transition hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300"
               >
                 Our Story
               </a>
               <a
                 href="#team"
-                className="inline-flex items-center justify-center rounded-xl border border-red-200 bg-white/70 px-6 py-3 text-sm font-semibold text-red-800 shadow-sm backdrop-blur transition hover:bg-white focus:outline-hidden focus:ring-4 focus:ring-red-200"
+                className="inline-flex items-center justify-center rounded-xl border border-primary-200 bg-white/70 px-6 py-3 text-sm font-semibold text-primary-800 shadow-sm backdrop-blur transition hover:bg-white focus:outline-none focus:ring-4 focus:ring-primary-100"
               >
                 Meet the Team
               </a>
@@ -122,7 +123,7 @@ const AboutUs = () => {
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
           variants={container}
-          className="rounded-3xl border border-red-200 bg-white/80 p-8 md:p-12 shadow-2xl shadow-red-900/5 backdrop-blur"
+          className="rounded-3xl border border-primary-200 bg-white/80 p-8 md:p-12 shadow-2xl shadow-primary-900/5 backdrop-blur"
         >
           <motion.h2
             variants={item}
@@ -137,17 +138,26 @@ const AboutUs = () => {
           >
             <motion.p variants={item}>
               We are final-year students at the Open University of Sri Lanka.
-              Just like you, we once struggled with scattered resources, outdated past papers,
-              and the overwhelming stress of exam preparation during our first year.
+              Just like you, we once struggled with scattered resources,
+              outdated past papers, and the overwhelming stress of exam
+              preparation during our first year.
             </motion.p>
 
             <motion.p variants={item}>
-              Through the Software Design course (EEY4189), we decided to stop complaining and{" "}
-              <span className="font-semibold text-gray-900">actually do something</span> about it.
+              Through the Software Design course (EEY4189), we decided to stop
+              complaining and{" "}
+              <span className="font-semibold text-gray-900">
+                actually do something
+              </span>{" "}
+              about it.
             </motion.p>
 
-            <motion.p variants={item} className="font-semibold text-red-800">
-              What began as a university project has grown into a serious platform — designed by students, for students.
+            <motion.p
+              variants={item}
+              className="font-semibold text-primary-800"
+            >
+              What began as a university project has grown into a serious
+              platform — designed by students, for students.
             </motion.p>
 
             {/* Small highlight row */}
@@ -162,7 +172,7 @@ const AboutUs = () => {
               ].map((x) => (
                 <div
                   key={x.t}
-                  className="rounded-2xl border border-red-100 bg-red-50/60 p-5"
+                  className="rounded-2xl border border-primary-100 bg-primary-50/60 p-5"
                 >
                   <p className="font-bold text-gray-900">{x.t}</p>
                   <p className="mt-1 text-sm text-gray-700">{x.d}</p>
@@ -174,7 +184,7 @@ const AboutUs = () => {
       </section>
 
       {/* WHY WE EXIST */}
-      <section className="bg-linear-to-b from-red-100/40 to-transparent py-18 md:py-24">
+      <section className="bg-linear-to-b from-primary-100/40 to-transparent py-18 md:py-24">
         <div className="mx-auto max-w-6xl px-6">
           <motion.div
             initial={{ opacity: 0, y: 14 }}
@@ -187,7 +197,8 @@ const AboutUs = () => {
               Why We Exist
             </h2>
             <p className="mx-auto mt-4 max-w-3xl text-lg text-gray-800">
-              A clearer mission, a stronger vision, and values that keep us student-first.
+              A clearer mission, a stronger vision, and values that keep us
+              student-first.
             </p>
           </motion.div>
 
@@ -201,24 +212,25 @@ const AboutUs = () => {
             {/* Mission */}
             <motion.div
               variants={item}
-              className="group rounded-3xl border border-red-200 bg-white p-8 shadow-xl shadow-red-900/5 transition hover:-translate-y-1 hover:shadow-2xl"
+              className="group rounded-3xl border border-primary-200 bg-white p-8 shadow-xl shadow-primary-900/5 transition hover:-translate-y-1 hover:shadow-2xl"
             >
               <div className="flex items-center gap-3">
-                <div className="grid h-12 w-12 place-items-center rounded-2xl bg-red-100 text-red-900 font-extrabold group-hover:scale-110 transition">
+                <div className="grid h-12 w-12 place-items-center rounded-2xl bg-primary-100 text-primary-900 font-extrabold group-hover:scale-110 transition">
                   M
                 </div>
                 <h3 className="text-xl font-bold">Mission</h3>
               </div>
               <p className="mt-4 text-gray-800 leading-relaxed">
-                Deliver a clean, powerful, completely free platform that saves time, reduces stress,
-                and helps first-year OUSL students perform better.
+                Deliver a clean, powerful, completely free platform that saves
+                time, reduces stress, and helps first-year OUSL students perform
+                better.
               </p>
             </motion.div>
 
             {/* Vision */}
             <motion.div
               variants={item}
-              className="relative overflow-hidden rounded-3xl bg-linear-to-br from-red-700 to-rose-700 p-8 text-white shadow-2xl shadow-red-800/20"
+              className="relative overflow-hidden rounded-3xl bg-linear-to-br from-primary-700 to-accent-700 p-8 text-white shadow-2xl shadow-primary-800/20"
             >
               <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-white/10 blur-2xl" />
               <div className="absolute -left-10 -bottom-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
@@ -230,8 +242,8 @@ const AboutUs = () => {
                   <h3 className="text-xl font-bold">Vision</h3>
                 </div>
                 <p className="mt-4 opacity-95 leading-relaxed">
-                  Become the #1 digital study companion trusted by thousands of OUSL students —
-                  modern, mobile-first, and genuinely helpful.
+                  Become the #1 digital study companion trusted by thousands of
+                  OUSL students — modern, mobile-first, and genuinely helpful.
                 </p>
                 <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold">
                   <span className="h-2 w-2 rounded-full bg-white" />
@@ -318,8 +330,12 @@ const AboutUs = () => {
                       </div>
                     </div>
 
-                    <h3 className="text-lg font-extrabold text-gray-900">{m.name}</h3>
-                    <p className="mt-1 text-sm font-semibold text-red-800">{m.role}</p>
+                    <h3 className="text-lg font-extrabold text-gray-900">
+                      {m.name}
+                    </h3>
+                    <p className="mt-1 text-sm font-semibold text-red-800">
+                      {m.role}
+                    </p>
                     <p className="mt-1 text-xs text-gray-600">{m.regNo}</p>
 
                     <div className="mt-5 flex flex-wrap justify-center gap-2">

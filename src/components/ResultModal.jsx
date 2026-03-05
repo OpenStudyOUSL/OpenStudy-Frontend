@@ -59,14 +59,14 @@ const ResultModal = ({ isOpen, score, total, quizId, onRestart, onClose }) => {
         <div className="flex justify-center gap-4">
           <button
             onClick={onRestart}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors shadow-md shadow-primary-700/20"
           >
             Restart
           </button>
 
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400"
+            className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
           >
             Close
           </button>

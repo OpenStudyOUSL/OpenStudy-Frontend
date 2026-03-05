@@ -7,9 +7,8 @@ import { useNavigate, useParams } from "react-router-dom";
 export default function CoursePage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true); // better as boolean
-  const [courses, setCourses] = useState([]);   // all courses from API
+  const [courses, setCourses] = useState([]); // all courses from API
   const [filteredCourses, setFilteredCourses] = useState([]); // displayed courses
-
 
   const { courseId } = useParams();
   const navigate = useNavigate();
@@ -19,7 +18,9 @@ export default function CoursePage() {
     const fetchCourses = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/Courses`);
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/Courses`,
+        );
         setCourses(res.data);
         setFilteredCourses(res.data); // initially show all
       } catch (err) {
@@ -31,8 +32,6 @@ export default function CoursePage() {
     };
 
     fetchCourses();
-
-    
   }, []);
 
   useEffect(() => {
@@ -53,17 +52,18 @@ export default function CoursePage() {
 
     const searchTerm = search.toLowerCase().trim();
 
-    const filtered = courses.filter((course) =>
-      course.courseName?.toLowerCase().includes(searchTerm) ||
-      course.courseDescription?.toLowerCase().includes(searchTerm) ||
-      course.courseTutor?.toLowerCase().includes(searchTerm)
+    const filtered = courses.filter(
+      (course) =>
+        course.courseName?.toLowerCase().includes(searchTerm) ||
+        course.courseDescription?.toLowerCase().includes(searchTerm) ||
+        course.courseTutor?.toLowerCase().includes(searchTerm),
     );
 
     setFilteredCourses(filtered);
   }, [search, courses]);
 
   return (
-    <div className="min-h-[calc(100vh-140px)] bg-violet-100">
+    <div className="min-h-[calc(100vh-140px)] bg-primary-50">
       <div className="mx-auto max-w-6xl px-4 py-8">
         {/* Header */}
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -75,7 +75,7 @@ export default function CoursePage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search courses..."
-              className="w-full rounded-full bg-white px-4 py-2 pr-10 text-sm shadow-sm ring-1 ring-black/10 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500"
+              className="w-full rounded-full bg-white px-4 py-2 pr-10 text-sm shadow-sm ring-1 ring-black/10 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
             <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">
               🔍
@@ -86,7 +86,7 @@ export default function CoursePage() {
         {/* Loading state */}
         {loading && (
           <div className="mt-12 text-center text-slate-600">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-violet-500 border-t-transparent"></div>
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary-500 border-t-transparent"></div>
             <p className="mt-3">Loading courses...</p>
           </div>
         )}
@@ -110,8 +110,12 @@ export default function CoursePage() {
             {/* Empty state */}
             {filteredCourses.length === 0 && courses.length > 0 && (
               <div className="mt-12 rounded-xl bg-white/60 p-8 text-center text-slate-700 ring-1 ring-black/5">
-                <p className="text-lg font-medium">No courses match "{search}"</p>
-                <p className="mt-2 text-sm">Try different keywords or clear the search.</p>
+                <p className="text-lg font-medium">
+                  No courses match "{search}"
+                </p>
+                <p className="mt-2 text-sm">
+                  Try different keywords or clear the search.
+                </p>
               </div>
             )}
 

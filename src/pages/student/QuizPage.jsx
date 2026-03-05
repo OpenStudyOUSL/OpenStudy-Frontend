@@ -101,7 +101,7 @@ export default function QuizPage() {
   };
 
   return (
-    <div className="min-h-screen bg-purple-50 flex flex-col">
+    <div className="min-h-screen bg-primary-50 flex flex-col">
       {/* Progress */}
       <div className="flex justify-center gap-2 py-4">
         {questions.map((_, idx) => (
@@ -109,9 +109,9 @@ export default function QuizPage() {
             key={idx}
             className={`w-3 h-3 rounded-full ${
               idx === currentIndex
-                ? "bg-black"
+                ? "bg-primary-900"
                 : idx < currentIndex
-                  ? "bg-green-500"
+                  ? "bg-primary-500"
                   : "bg-gray-300"
             }`}
           />
@@ -142,7 +142,7 @@ export default function QuizPage() {
 
             <button
               onClick={nextQuestion}
-              className="px-6 py-3 bg-black text-white rounded-full"
+              className="px-6 py-3 bg-primary-600 text-white rounded-full hover:bg-primary-700 transition shadow-lg shadow-primary-700/20"
             >
               {isLastQuestion ? "Finish Quiz" : "Next →"}
             </button>

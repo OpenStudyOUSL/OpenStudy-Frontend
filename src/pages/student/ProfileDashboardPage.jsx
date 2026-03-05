@@ -74,14 +74,14 @@ const ProfileDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-primary-100 to-white flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           className="flex flex-col items-center"
         >
-          <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
-          <p className="mt-4 text-xl font-medium text-purple-700 animate-pulse">
+          <div className="w-16 h-16 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+          <p className="mt-4 text-xl font-medium text-primary-700 animate-pulse">
             Preparing your workspace...
           </p>
         </motion.div>
@@ -97,7 +97,7 @@ const ProfileDashboard = () => {
         </p>
         <button
           onClick={() => window.location.reload()}
-          className="px-6 py-2 bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700 transition"
+          className="px-6 py-2 bg-primary-600 text-white rounded-lg shadow-md hover:bg-primary-700 transition"
         >
           Retry
         </button>
@@ -132,7 +132,7 @@ const ProfileDashboard = () => {
           scale: [1, 1.1, 1],
         }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-300 rounded-full mix-blend-multiply filter blur-[100px] opacity-20 pointer-events-none"
+        className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-300 rounded-full mix-blend-multiply filter blur-[100px] opacity-20 pointer-events-none"
       />
       <motion.div
         animate={{
@@ -141,7 +141,7 @@ const ProfileDashboard = () => {
           scale: [1, 1.2, 1],
         }}
         transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-0 left-0 w-[500px] h-[500px] bg-pink-300 rounded-full mix-blend-multiply filter blur-[100px] opacity-20 pointer-events-none"
+        className="absolute top-0 left-0 w-[500px] h-[500px] bg-primary-200 rounded-full mix-blend-multiply filter blur-[100px] opacity-20 pointer-events-none"
       />
 
       <div className="relative z-10 p-4 sm:p-8 flex justify-center w-full">
@@ -162,7 +162,7 @@ const ProfileDashboard = () => {
                   whileHover={{ scale: 1.05 }}
                   className="relative flex-shrink-0"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-tr from-purple-500 via-pink-500 to-indigo-500 rounded-full animate-spin-slow opacity-20 blur-xl" />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-primary-500 via-primary-300 to-primary-600 rounded-full animate-spin-slow opacity-20 blur-xl" />
                   <img
                     src={profilePic}
                     alt="profile"
@@ -176,7 +176,7 @@ const ProfileDashboard = () => {
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="inline-flex items-center px-4 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-full text-xs font-bold tracking-widest mb-5 shadow-lg shadow-purple-200"
+                    className="inline-flex items-center px-4 py-1.5 bg-gradient-to-r from-primary-600 to-primary-500 text-white rounded-full text-xs font-bold tracking-widest mb-5 shadow-lg shadow-primary-200"
                   >
                     PREMIUM STUDENT
                   </motion.span>
@@ -197,7 +197,7 @@ const ProfileDashboard = () => {
                     className="flex flex-col sm:flex-row items-center gap-6 mt-6 text-gray-500 font-semibold"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-purple-50 rounded-lg text-purple-600">
+                      <div className="p-2 bg-primary-50 rounded-lg text-primary-600">
                         <svg
                           className="w-5 h-5"
                           fill="none"
@@ -318,51 +318,51 @@ const ProfileDashboard = () => {
                     Academic Analytics
                   </h2>
                   <div className="flex gap-2">
-                    <span className="w-3 h-3 rounded-full bg-purple-500" />
-                    <span className="w-3 h-3 rounded-full bg-pink-500" />
-                    <span className="w-3 h-3 rounded-full bg-indigo-500" />
+                    <span className="w-3 h-3 rounded-full bg-primary-500" />
+                    <span className="w-3 h-3 rounded-full bg-primary-400" />
+                    <span className="w-3 h-3 rounded-full bg-primary-600" />
                   </div>
                 </div>
 
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                  <div className="p-8 rounded-[2rem] bg-indigo-50/50 flex flex-col items-center text-center">
-                    <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center shadow-lg mb-6 ring-8 ring-indigo-100">
-                      <span className="text-3xl font-black text-indigo-600">
+                  <div className="p-8 rounded-[2rem] bg-primary-50/50 flex flex-col items-center text-center">
+                    <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center shadow-lg mb-6 ring-8 ring-primary-100">
+                      <span className="text-3xl font-black text-primary-600">
                         {stats.correctAnswers}
                       </span>
                     </div>
                     <h3 className="text-lg font-bold text-gray-900 mb-1">
                       Correct Answers
                     </h3>
-                    <p className="text-indigo-600/70 text-sm font-medium">
+                    <p className="text-primary-600/70 text-sm font-medium">
                       Keep it up!
                     </p>
                   </div>
 
-                  <div className="p-8 rounded-[2rem] bg-pink-50/50 flex flex-col items-center text-center">
-                    <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center shadow-lg mb-6 ring-8 ring-pink-100">
-                      <span className="text-3xl font-black text-pink-600">
+                  <div className="p-8 rounded-[2rem] bg-accent-50/50 flex flex-col items-center text-center">
+                    <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center shadow-lg mb-6 ring-8 ring-accent-100">
+                      <span className="text-3xl font-black text-accent-600">
                         {stats.wrongAnswers}
                       </span>
                     </div>
                     <h3 className="text-lg font-bold text-gray-900 mb-1">
                       Missed Questions
                     </h3>
-                    <p className="text-pink-600/70 text-sm font-medium">
+                    <p className="text-accent-600/70 text-sm font-medium">
                       Focus and learn
                     </p>
                   </div>
 
-                  <div className="p-8 rounded-[2rem] bg-purple-50/50 flex flex-col items-center text-center">
-                    <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center shadow-lg mb-6 ring-8 ring-purple-100">
-                      <span className="text-3xl font-black text-purple-600">
+                  <div className="p-8 rounded-[2rem] bg-primary-50/50 flex flex-col items-center text-center">
+                    <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center shadow-lg mb-6 ring-8 ring-primary-100">
+                      <span className="text-3xl font-black text-primary-600">
                         {stats.quizzesTaken}
                       </span>
                     </div>
                     <h3 className="text-lg font-bold text-gray-900 mb-1">
                       Tests Attempted
                     </h3>
-                    <p className="text-purple-600/70 text-sm font-medium">
+                    <p className="text-primary-600/70 text-sm font-medium">
                       Dedication pays
                     </p>
                   </div>
@@ -376,7 +376,7 @@ const ProfileDashboard = () => {
                 transition={{ delay: 1 }}
                 className="bg-gray-900 rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden"
               >
-                <div className="absolute top-0 right-0 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute top-0 right-0 w-64 h-64 bg-primary-600/10 rounded-full blur-3xl pointer-events-none" />
                 <h3 className="text-2xl font-bold mb-8">
                   Performance Trajectory
                 </h3>
@@ -387,7 +387,7 @@ const ProfileDashboard = () => {
                       initial={{ height: 0 }}
                       animate={{ height: `${val}%` }}
                       transition={{ delay: 1.2 + i * 0.1, duration: 1 }}
-                      className="flex-1 bg-gradient-to-t from-purple-600 to-indigo-400 rounded-xl hover:scale-110 transition-transform cursor-pointer relative group"
+                      className="flex-1 bg-gradient-to-t from-primary-600 to-primary-400 rounded-xl hover:scale-110 transition-transform cursor-pointer relative group"
                     >
                       <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-white text-gray-900 text-xs font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
                         {val}%
@@ -413,7 +413,7 @@ const ProfileDashboard = () => {
                 className="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-gray-200/50 border border-gray-100"
               >
                 <h3 className="text-xl font-black text-gray-900 mb-8 flex items-center gap-3">
-                  <div className="w-2 h-6 bg-purple-600 rounded-full" />
+                  <div className="w-2 h-6 bg-primary-600 rounded-full" />
                   Skill Mastery
                 </h3>
                 <div className="space-y-8">
@@ -445,7 +445,7 @@ const ProfileDashboard = () => {
                 </div>
                 <Link
                   to="/courses"
-                  className="mt-10 block w-full py-4 text-center bg-purple-50 text-purple-600 font-black rounded-2xl hover:bg-purple-100 transition-colors"
+                  className="mt-10 block w-full py-4 text-center bg-primary-50 text-primary-600 font-black rounded-2xl hover:bg-primary-100 transition-colors"
                 >
                   Continue Learning
                 </Link>
@@ -456,7 +456,7 @@ const ProfileDashboard = () => {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 1.2 }}
-                className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-[2.5rem] p-8 text-white shadow-2xl overflow-hidden relative"
+                className="bg-gradient-to-br from-primary-600 to-primary-800 rounded-[2.5rem] p-8 text-white shadow-2xl overflow-hidden relative"
               >
                 <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none" />
                 <h3 className="text-xl font-bold mb-6">Recent Badges</h3>

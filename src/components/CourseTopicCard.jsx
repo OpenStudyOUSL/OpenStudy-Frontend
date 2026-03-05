@@ -3,10 +3,9 @@ import { Link } from "react-router-dom";
 export default function QuizTopicCard({
   topicName,
   quizCount = 0,
-  courseId,               // ← required to build correct link
-  className = "",         // optional: extra classes from parent
+  courseId, // ← required to build correct link
+  className = "", // optional: extra classes from parent
 }) {
-
   // Disable if critical data is missing or zero quizzes
   const isDisabled = !courseId || !topicName || quizCount === 0;
 
@@ -14,7 +13,7 @@ export default function QuizTopicCard({
     <div
       className={`
         w-full max-w-md
-        bg-linear-to-br from-purple-600 to-purple-700
+        bg-gradient-to-br from-primary-600 to-primary-700
         text-white
         rounded-2xl
         overflow-hidden
@@ -33,7 +32,7 @@ export default function QuizTopicCard({
             text-2xl md:text-3xl 
             font-bold 
             leading-tight
-            group-hover:text-purple-100
+            group-hover:text-primary-100
             transition-colors duration-300
           "
         >
@@ -70,14 +69,14 @@ export default function QuizTopicCard({
               to={`/courseinfo/${courseId}/${topicName}`}
               className="
                 bg-white 
-                text-purple-700
+                text-primary-700
                 font-semibold
                 text-base
                 px-7 py-3
                 rounded-full
                 shadow-md
-                hover:bg-purple-50
-                hover:text-purple-800
+                hover:bg-primary-50
+                hover:text-primary-800
                 hover:shadow-lg
                 active:scale-95
                 transition-all duration-200
