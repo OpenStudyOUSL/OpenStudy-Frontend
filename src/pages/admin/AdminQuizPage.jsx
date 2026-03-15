@@ -266,7 +266,7 @@ export default function AdminQuizPage() {
             <div className={navItemClass}>Courses</div>
           </Link>
           <div className={activeNavItemClass}>Quizzes</div>
-          <div className={navItemClass}>Reports</div>
+          
 
           <div
             onClick={() => {
