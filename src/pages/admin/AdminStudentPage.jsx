@@ -174,7 +174,7 @@ export default function AdminStudentPage() {
           <Link to="/admin/quizzes" className="block">
             <div className={navItemClass}>Quizzes</div>
           </Link>
-          <div className={navItemClass}>Reports</div>
+          
 
           <div
             onClick={() => {
