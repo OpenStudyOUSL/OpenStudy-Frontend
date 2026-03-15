@@ -127,7 +127,7 @@ export default function AdminQuizPage() {
       question,
       options,
       correctAnswer,
-      questionType,
+      
     } = form;
 
     // Basic validation
