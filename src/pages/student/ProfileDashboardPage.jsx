@@ -368,40 +368,6 @@ const ProfileDashboard = () => {
                   </div>
                 </div>
               </motion.section>
-
-              {/* Progress visualizer */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1 }}
-                className="bg-gray-900 rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden"
-              >
-                <div className="absolute top-0 right-0 w-64 h-64 bg-primary-600/10 rounded-full blur-3xl pointer-events-none" />
-                <h3 className="text-2xl font-bold mb-8">
-                  Performance Trajectory
-                </h3>
-                <div className="flex items-end gap-3 h-40">
-                  {[20, 60, 45, 90, 75, 40, 85].map((val, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ height: 0 }}
-                      animate={{ height: `${val}%` }}
-                      transition={{ delay: 1.2 + i * 0.1, duration: 1 }}
-                      className="flex-1 bg-gradient-to-t from-primary-600 to-primary-400 rounded-xl hover:scale-110 transition-transform cursor-pointer relative group"
-                    >
-                      <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-white text-gray-900 text-xs font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                        {val}%
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-                <div className="flex justify-between mt-6 text-gray-400 text-xs font-bold uppercase tracking-widest">
-                  <span>Mon</span>
-                  <span>Wed</span>
-                  <span>Fri</span>
-                  <span>Sun</span>
-                </div>
-              </motion.div>
             </div>
 
             {/* ================= SIDEBAR ================= */}
@@ -451,31 +417,6 @@ const ProfileDashboard = () => {
                 </Link>
               </motion.section>
 
-              {/* Achievements Card */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1.2 }}
-                className="bg-gradient-to-br from-primary-600 to-primary-800 rounded-[2.5rem] p-8 text-white shadow-2xl overflow-hidden relative"
-              >
-                <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none" />
-                <h3 className="text-xl font-bold mb-6">Recent Badges</h3>
-                <div className="flex flex-wrap gap-4">
-                  {["🔥", "💡", "🚀", "🏆"].map((emoji, i) => (
-                    <motion.div
-                      key={i}
-                      whileHover={{ scale: 1.2, rotate: 10 }}
-                      className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-3xl shadow-lg border border-white/20 cursor-pointer"
-                    >
-                      {emoji}
-                    </motion.div>
-                  ))}
-                </div>
-                <p className="mt-8 text-indigo-100/70 text-sm font-medium italic">
-                  "Success is the sum of small efforts, repeated day in and day
-                  out."
-                </p>
-              </motion.div>
             </div>
           </div>
         </motion.div>
