@@ -29,14 +29,14 @@ const teamMembers = [
     name: "K.R. Malinga",
     regNo: "423600376",
     role: "Frontend Dev. & Testing",
-    skills: ["React", "Tailwind", "Teamwork"],
+    skills: ["React", "Express", "MongoDB"],
     image: malingaImg,
   },
   {
     name: "W.M.W. Wijesinghe",
     regNo: "123599265",
     role: "UI/UX & Backend Dev.",
-    skills: ["UI/UX", "MongoDB", "Node.js"],
+    skills: ["UI/UX", "Tailwind", "Node.js"],
     image: wijesingheImg,
   },
   {

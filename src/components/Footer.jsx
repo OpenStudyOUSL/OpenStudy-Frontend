@@ -32,7 +32,7 @@ const Footer = () => {
           <nav className="flex flex-wrap gap-x-6 gap-y-3 md:justify-end text-sm font-semibold">
             {[
               { to: "/", label: "Home" },
-              { to: "/quiz", label: "Quiz" },
+              { to: "/course", label: "Course" },
               { to: "/leaderboard", label: "Leader board" },
               { to: "/help", label: "Help" },
               { to: "/contact", label: "Contact us" },
