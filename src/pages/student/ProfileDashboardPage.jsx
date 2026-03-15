@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 const ProfileDashboard = () => {
   const navigate = useNavigate();
@@ -348,7 +348,7 @@ const ProfileDashboard = () => {
                     <h3 className="text-lg font-bold text-gray-900 mb-1">
                       Missed Questions
                     </h3>
-                    <p className="text-accent-600/70 text-sm font-medium">
+                    <p className="text-primary-600/70 text-sm font-medium">
                       Focus and learn
                     </p>
                   </div>
